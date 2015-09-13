@@ -9,7 +9,7 @@ fi
 
 DEVICE="/dev/loop0"
 IMAGE="floppy.img"
-SO_PATH="/opt/operation"
+SO_PATH=`pwd`/../
 SCRIPTS=$SO_PATH"/scripts"
 BOOTLOADER="$SO_PATH/bootloader"
 KERNEL="$SO_PATH/kernel"
