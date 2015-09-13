@@ -1,3 +1,3 @@
 # OS
 
-My own personal project - Operation System development.
+My personal project - Operation System development.
