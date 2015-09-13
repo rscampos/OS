@@ -1,0 +1,77 @@
+/* Names were get from brokenthorn tutorial 
+ */
+enum FLPYDSK_IO{
+        FLPYDSK_DOR             =       0x3f2,  /* Digital Output Register */
+        FLPYDSK_MSR             =       0x3f4,  /* Main Status Register */
+        FLPYDSK_FIFO            =       0x3f5,  /* data register */
+        FLPYDSK_CTRL            =       0x3f7   /* AT only. Configuation Control Register */
+};
+
+enum FLPYDSK_DOR_MASK {
+        FLPYDSK_DOR_MASK_DRIVE0 =       0x0,    /* select FDD 0 - 00000000 */
+        FLPYDSK_DOR_MASK_DRIVE1 =       0x1,    /* select FDD 1 - 00000010 */
+        FLPYDSK_DOR_MASK_DRIVE2 =       0x2,    /* select FDD 2 - 00000011 */
+        FLPYDSK_DOR_MASK_DRIVE3 =       0x3,    /* select FDD 3 - 00000011 */
+        FLPYDSK_DOR_MASK_RESET  =       0x0,    /* reset controller - 00000000 */
+        FLPYDSK_DOR_MASK_CONENA =       0x4,    /* controller enable - 00000100 */
+        FLPYDSK_DOR_MASK_IRQ    =       0x0,    /* IRQ channel - 00000000 */
+        FLPYDSK_DOR_MASK_DMA    =       0x8,    /* DMA mode - 00001000 */
+        FLPYDSK_DOR_MASK_MCSTO  =       0x0,    /* Stop motor for driver - 00000000 */
+        FLPYDSK_DOR_MASK_MCSTA0 =       0x10,   /* Start motor FDD0 - 00010000 */
+        FLPYDSK_DOR_MASK_MCSTA1 =       0x20,   /* Start motor FDD1 - 00100000 */
+        FLPYDSK_DOR_MASK_MCSTA2 =       0x30,   /* Start motor FDD2 - 01000000 */
+        FLPYDSK_DOR_MASK_MCSTA3 =       0x40    /* Start motor FDD3 - 10000000 */
+};
+
+enum FLPYDSK_MSR_MASK {
+        FLPYDSK_MSR_MASK_DRIVE0_BUSY    =       0x1,    /* FDD 0 is busy on seek - 00000001 */
+        FLPYDSK_MSR_MASK_DRIVE1_BUSY    =       0x2,    /* FDD 1 is busy on seek - 00000010 */
+        FLPYDSK_MSR_MASK_DRIVE2_BUSY    =       0x4,    /* FDD 2 is busy on seek - 00000100 */
+        FLPYDSK_MSR_MASK_DRIVE3_BUSY    =       0x8,    /* FDD 3 is busy on seek - 00001000 */
+        FLPYDSK_MSR_MASK_FDC_BUSY       =       0x10,   /* FDC busy on read/write - 00010000 */
+        FLPYDSK_MSR_MASK_FDC_NDMA       =       0x20,   /* FDC not in DMA mode - 00100000 */
+        FLPYDSK_MSR_MASK_FDC_DIO        =       0x40,   /* FDC has data for CPU - 01000000 */
+        FLPYDSK_MSR_MASK_FDC_RQM        =       0x80    /* Data register is ready for data transfer - 00000001 */
+};
+
+enum FLPYDSK_CMD {      
+        FDC_CMD_READ_TRACK      =       0x2,
+        FDC_CMD_SPECIFY         =       0x3,
+        FDC_CMD_CHECK_STAT      =       0x4,
+        FDC_CMD_WRITE_SECT      =       0x5,
+        FDC_CMD_READ_SECT       =       0x6,
+        FDC_CMD_CALIBRATE       =       0x7,
+        FDC_CMD_CHECK_INT       =       0x8,
+        FDC_CMD_WRITE_DEL_S     =       0x9,
+        FDC_CMD_READ_ID_S       =       0xa,
+        FDC_CMD_READ_DEL_S      =       0xc,
+        FDC_CMD_FORMAT_TRACK    =       0xd,
+        FDC_CMD_SEEK            =       0xf
+};
+
+
+enum FLPYDSK_CMD_EXT {
+        FDC_CMD_EXT_SKIP        =       0x20,   /* Skip deleted data address marks - 00100000 */
+        FDC_CMD_EXT_DENSITY     =       0x40,   /* Operate in MFM (Double Density) mode - 01000000 */
+        FDC_CMD_EXT_MULTITRACK  =       0x80    /* Operate on both tracks of the cylinder - 10000000 */
+};
+
+enum FLPYDSK_GAP3_LENGTH {
+        FLPYDSK_GAP3_LENGTH_STD =       0x2A,
+        FLPYDSK_GAP3_LENGTH_5_14=       0x20,
+        FLPYDSK_GAP3_LENGTH_3_5 =       0x1B
+};
+
+enum FLPYDSK_SECTOR_DTL {
+        FLPYDSK_SECTOR_DTL_128  =       0x0,
+        FLPYDSK_SECTOR_DTL_256  =       0x1,
+        FLPYDSK_SECTOR_DTL_512  =       0x2,    /* most common */
+        FLPYDSK_SECTOR_DTL_1024 =       0x4
+};
+
+enum FLPYDSK_INFOS{
+        FLPY_SECTORS_PER_TRACK  =       0x50
+
+};
+
+const int DMA_BUFFER            =       0x1000;
