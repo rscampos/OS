@@ -25,7 +25,6 @@ int setuphal(multiboot_info_t* bootinfo)
         //puts("[HAL] Installing IRQs...\n"); 
         //init_timer(20000000); 
         asm volatile("sti");
-        hardware_cpuid();
         //init_keyboard();
         
 
