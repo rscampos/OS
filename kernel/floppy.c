@@ -12,15 +12,15 @@ void fdctrl_callback(registers_t regs){
 
 
 void fdctrl_init_dma(){
-        outb(0x0a, 0x06);       /* mask dma channel 2 */
-        outb(0xd8, 0xff);       /* reset master flip-flop */
-        outb(0x04, 0x00);       /* address=0x1000 */
-        outb(0x04, 0x10);
-        outb(0xd8, 0xff);       /* reset master flip-flop */
-        outb(0x05, 0xff);       /* count to 0x23ff (number of bytes in a 3.5" floppy disk track) */
-        outb(0x05, 0x23);
-        outb(0x80, 0x00);       /* external page register = 0 */
-        outb(0x0a, 0x02);       /* unmask dma channel 2 */
+        outb(0x0a, 0x06);                       /* mask dma channel 2 */
+        outb(0xd8, 0xff);                       /* reset master flip-flop */
+        outb(0x04, DMA_BUFFER & 0x00FF);        /* address=0x1000 */
+        outb(0x04, (DMA_BUFFER & 0xFF00) >> 8);
+        outb(0xd8, 0xff);                       /* reset master flip-flop */
+        outb(0x05, 0xff);                       /* count to 0x23ff (number of ...*/
+        outb(0x05, 0x23);                       /* bytes in a 3.5" floppy disk track) */
+        outb(0x80, 0x00);                       /* external page register = 0 */
+        outb(0x0a, 0x02);                       /* unmask dma channel 2 */
 
 } 
 

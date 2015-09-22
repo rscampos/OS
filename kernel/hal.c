@@ -40,6 +40,6 @@ int setuphal(multiboot_info_t* bootinfo)
         ///puts("done.\n");
        
         pmm_memory_map(bootinfo);  
-        //init_fdctrl();
+        init_fdctrl();
         return 1;
 }

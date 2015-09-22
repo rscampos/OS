@@ -17,7 +17,8 @@ int main()
         u32int addr_k;
         char *banner = "Welcome to my operation system!\n";
                
-        for(i=0;i<=8192;i++){
+        //for(i=0;i<=8192;i++){
+        for(i=0;i<=100;i++){
                 size = 512; // 1MB
                 addr_k = kmalloc(size);
                 if(i==0) printf("addr:0x%x\n",addr_k);
