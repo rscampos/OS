@@ -22,7 +22,7 @@ then
         gdb -q $KERNEL/KERNELS -x ./gdbinit
 
 else
-        echo "This script is used to start the operation system using qemu."
+        echo "This script is used to start the operation system using qemu.."
         echo "Options:"
         echo "\t" "-c CLI (curses)"
         echo "\t" "-g GUI (graphical)"

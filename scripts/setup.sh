@@ -19,7 +19,7 @@ TMP="/tmp"
 DIR_FS="/media/fat12"
 DIR_FILES="/opt/ownos/files"
 
-echo "[+] Setup the directories:"
+echo "[+] Setup the directories::"
 echo "  [-] Creating \"$TMP\" if there isn't."
 mkdir -p $TMP
 echo "  [-] Creating \"$DIR_FS\" if there isn't."
