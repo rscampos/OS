@@ -15,6 +15,10 @@ u32int kheap_init_addr = 0x30000000; /* PT#192 */
 u32int kmalloc_a(u32int size, int align){
         u32int temp;
         page_t * page_temp;
+
+        /* If the paging isn't enable, the phy_addr starts after
+         * the last byte in the KERNEL IMG.
+         */
         if(paging_enable!=1){
                 if(align == 1 && ((phy_addr & 0xFFFFF000)!= phy_addr)){ /* checks if isn't already page-aligned */
                         phy_addr &= 0xFFFFF000;
@@ -51,6 +55,7 @@ u32int kmalloc_a(u32int size, int align){
 }
 
 u32int kmalloc(u32int size){
+        /* Call kmalloc_a() without align. */
         return kmalloc_a(size,0);
 }
 

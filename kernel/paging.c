@@ -3,7 +3,7 @@
 #include "isr.h"
 #include "kheap.h"
 
-u32int number_frames    = 0;
+u32int number_frames    = 0;    /* number of frames available. */
 int paging_enable       = 0;
 extern page_directory_t *kernel_directory;
 

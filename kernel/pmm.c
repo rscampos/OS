@@ -36,6 +36,10 @@ char * pmm_type(u32int mmtype){
         }
 
 }
+
+/* The first function to be called. This function sets the bitmap
+ * and call the init_page.
+ */
 void pmm_memory_map(multiboot_info_t* bootinfo){
         int region;
 
@@ -43,7 +47,7 @@ void pmm_memory_map(multiboot_info_t* bootinfo){
         memory_len = bootinfo->m_memoryLo + 1;
         
         /* Pointer to the memory map */
-        memory_map_t * p_memory_map =  bootinfo->m_mmap_addr;
+        memory_map_t * p_memory_map = bootinfo->m_mmap_addr;
         memory_len = ((memory_len*64)/1024)+16;
 
         /* Inicalize the bitmap for the physical memory */
@@ -88,9 +92,9 @@ void pmm_init_page(){
         //page_va = 0x109 * 0x1000;
         //show_page(get_page(page_va,1,kernel_directory),page_va, kernel_directory); 
         //show_page(page_t * page, u32int page_va, page_directory_t * page_dir); 
-        /*
-        printf("Numbers frames used:%d pages:%d\n",frames_used,pages_used);
-        */
+        
+        printf("Numbers frames:%d-%d=%d \n",number_frames,frames_used, (number_frames-frames_used));
+        
         
         //page_tmp = get_page((pages_used-1)*PAGE_SIZE,1,kernel_directory);
         /*
@@ -140,10 +144,11 @@ void pmm_init_page(){
 void pmm_init_bitmap(){
         u32int physical_addr=0x0;
         int i;
+     
         /* Alloc memory for bitmap */
         number_frames = PMM_MEM_TO_M_B(memory_len)/PMM_FRAME_SIZE;
         bitmap = kmalloc(number_frames/PMM_BITMAP_SCHUNCK);
-        //printf("Bitmap address:0x%x\n", bitmap);
+        printf("Bitmap address:0x%x\n", bitmap);
         memset(bitmap,0,number_frames/PMM_BITMAP_SCHUNCK);
 
         /* From 0 to 1MB, there's just 159 (0 to 158)frames 
@@ -157,7 +162,7 @@ void pmm_init_bitmap(){
         
         /* 0x9F000(159*4KB) ~  0x100000(256*4KB)*/
         //for(i=159;i<256;i++)
-        //        pmm_set_bitmap(i);
+          //      pmm_set_bitmap(i);
 
 }
 

@@ -78,4 +78,4 @@ enum FLPYDSK_INFOS{
 
 };
 
-const int DMA_BUFFER            =       0x6000;
+const int DMA_BUFFER            =       0x1000;

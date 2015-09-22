@@ -18,6 +18,7 @@ start:  jmp Stage2
 %include "fat12.inc"    ; Fat12 Routines
 %include "common.inc"	; some variables
 %include "memory.inc"	; some variables
+%include "A20.inc"	; A20 functions
 
 ;===============================;
 ; 	Stage2 Entry Point 	;
@@ -56,9 +57,8 @@ Stage2:
         ;   Enable A20			;
         ;-------------------------------;
 
-        mov ax, 0x2400
-        int 0x15
-        
+        call ENABLEA20
+ 
         ;-------------------------------;
         ;   Get memory Size	        ;
         ;-------------------------------;
@@ -111,7 +111,7 @@ Stage2:
         ;-------------------------------;
         cli
         mov     eax, cr0                ; get the current value of cr0
-        or      eax, 0x1                ; change JUST the first bit (Bit 0)
+        or      eax, 0x1                ; change JUST the first bit (Bit 0) - PE bit
         mov     cr0, eax                ; change the value of cr0
 
 	jmp	KERNEL_CODE_DESC:Stage3
@@ -122,7 +122,6 @@ Stage3:
         ;-------------------------------;
         ;   Move the image to 1MB       ;
         ;-------------------------------;
- 
 	mov	ax, WORD[countersectors]	; how many sectors
 	mov	bx, WORD[bpbBytesPerSector]	; bytes per sector
 	mul	bx				; total of bytes
@@ -134,19 +133,6 @@ Stage3:
 	cld                                     ; load 1M - 0x1000 for jump to
 	rep	movsd                           ; 1MB. The first byte is at 1M
 
-        ;-------------------------------;
-        ;   Get the entry point       	;
-        ;-------------------------------;
-	;mov	eax, [IMAGEPMODE+0x3C]		; GET the offset to New EXE Header
-        ;add	eax, IMAGEPMODE			; start address of IMAGE_NT_HEADERS
-	;add	eax, 0x18			; jump to IMAGE_OPTIONAL_HEADER
-	;add	eax, 0x10			; offset to AddressOfEntryPoint
-	;mov	ebx, [eax]			; ebx = AddressOfEntryPoint
-	;add	eax, 0xc			; offset to ImageBase from entry point
-	;mov	eax, [eax]			; eax = ImageBase
-	;add	eax, ebx
-	;call	eax				; execute the kernel
-
         ;--------------------------------;
         ; Set the information for kernel ;
         ;--------------------------------;
@@ -155,5 +141,4 @@ Stage3:
         call    IMAGEPMODE	                ; call the image kernell - elf
 
 msg	DB      "[Stage2] Welcome to My Operating System!", 0
-;fileimg	DB      "KRNL32  EXE", 0	; Windows - PE
 fileimg	DB      "KERNEL     ", 0		; Linux - ELF

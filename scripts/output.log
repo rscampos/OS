@@ -1,0 +1,15 @@
+nasm -felf boot.s
+nasm -felf interrupt.s
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o main.o main.c
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o monitor.o monitor.c
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o io.o io.c
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o descriptor_table.o descriptor_table.c
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o isr.o isr.c
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o hal.o hal.c
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o execptions.o execptions.c
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o pmm.o pmm.c
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o kheap.o kheap.c
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o common.o common.c
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o paging.o paging.c
+cc -nostdlib -nostdinc -fno-builtin -fno-stack-protector -ggdb   -c -o hardware.o hardware.c
+ld -Tlink.ld -o KERNEL boot.o interrupt.o main.o monitor.o io.o descriptor_table.o isr.o hal.o execptions.o pmm.o kheap.o common.o paging.o hardware.o 

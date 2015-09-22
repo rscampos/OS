@@ -1,0 +1,50 @@
+monitor.c:44:6: warning: conflicting types for 'vga_change_color' [enabled by default]
+monitor.c:18:9: note: previous implicit declaration of 'vga_change_color' was here
+monitor.c:48:6: warning: conflicting types for 'vga_restore_color' [enabled by default]
+monitor.c:20:9: note: previous implicit declaration of 'vga_restore_color' was here
+monitor.c: In function 'clear_screen':
+monitor.c:66:24: warning: initialization makes pointer from integer without a cast [enabled by default]
+monitor.c: In function 'put_char':
+monitor.c:82:24: warning: initialization makes pointer from integer without a cast [enabled by default]
+monitor.c:85:22: warning: comparison between pointer and integer [enabled by default]
+monitor.c:91:22: warning: comparison between pointer and integer [enabled by default]
+monitor.c:93:17: warning: passing argument 1 of 'put_char' makes pointer from integer without a cast [enabled by default]
+monitor.c:81:5: note: expected 'char *' but argument is of type 'int'
+monitor.c:99:25: warning: assignment makes integer from pointer without a cast [enabled by default]
+monitor.c: At top level:
+monitor.c:112:6: warning: conflicting types for 'puts' [enabled by default]
+monitor.c:19:9: note: previous implicit declaration of 'puts' was here
+monitor.c: In function 'puts':
+monitor.c:115:17: warning: passing argument 1 of 'put_char' makes pointer from integer without a cast [enabled by default]
+monitor.c:81:5: note: expected 'char *' but argument is of type 'char'
+monitor.c: In function 'va_start':
+monitor.c:138:33: warning: assignment makes pointer from integer without a cast [enabled by default]
+monitor.c:148:41: warning: passing argument 1 of 'put_char' makes pointer from integer without a cast [enabled by default]
+monitor.c:81:5: note: expected 'char *' but argument is of type 'char'
+monitor.c:152:41: warning: passing argument 1 of 'puts' makes pointer from integer without a cast [enabled by default]
+monitor.c:112:6: note: expected 'char *' but argument is of type 'int'
+monitor.c:169:25: warning: passing argument 1 of 'put_char' makes pointer from integer without a cast [enabled by default]
+monitor.c:81:5: note: expected 'char *' but argument is of type 'char'
+monitor.c: At top level:
+monitor.c:221:6: warning: conflicting types for 'itoa' [enabled by default]
+monitor.c:143:41: note: previous implicit declaration of 'itoa' was here
+pmm.c: In function 'pmm_memory_map':
+pmm.c:46:40: warning: initialization makes pointer from integer without a cast [enabled by default]
+pmm.c: At top level:
+pmm.c:59:6: warning: conflicting types for 'pmm_init_page' [enabled by default]
+pmm.c:51:9: note: previous implicit declaration of 'pmm_init_page' was here
+pmm.c:140:6: warning: conflicting types for 'pmm_init_bitmap' [enabled by default]
+pmm.c:50:9: note: previous implicit declaration of 'pmm_init_bitmap' was here
+pmm.c: In function 'pmm_init_bitmap':
+pmm.c:145:16: warning: assignment makes pointer from integer without a cast [enabled by default]
+pmm.c: At top level:
+pmm.c:178:6: warning: conflicting types for 'pmm_alloc_frame' [enabled by default]
+pmm.c:79:17: note: previous implicit declaration of 'pmm_alloc_frame' was here
+pmm.c:206:6: warning: conflicting types for 'pmm_set_bitmap' [enabled by default]
+pmm.c:187:9: note: previous implicit declaration of 'pmm_set_bitmap' was here
+pmm.c:216:6: warning: conflicting types for 'pmm_clear_bitmap' [enabled by default]
+pmm.c:202:9: note: previous implicit declaration of 'pmm_clear_bitmap' was here
+paging.c: In function 'get_page':
+paging.c:31:73: warning: assignment makes integer from pointer without a cast [enabled by default]
+paging.c: In function 'show_page':
+paging.c:68:27: warning: initialization makes integer from pointer without a cast [enabled by default]

@@ -6,7 +6,7 @@
 ENTRY(start)
 SECTIONS
 {
-  .text 0x100000 :
+  .text 0x100000:       /* linked for - above 1MB */
   {
       code = .; _code = .; __code = .; 
     *(.text)

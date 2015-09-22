@@ -15,7 +15,7 @@ void fdctrl_init_dma(){
         outb(0x0a, 0x06);       /* mask dma channel 2 */
         outb(0xd8, 0xff);       /* reset master flip-flop */
         outb(0x04, 0x00);       /* address=0x1000 */
-        outb(0x04, 0x60);
+        outb(0x04, 0x10);
         outb(0xd8, 0xff);       /* reset master flip-flop */
         outb(0x05, 0xff);       /* count to 0x23ff (number of bytes in a 3.5" floppy disk track) */
         outb(0x05, 0x23);
@@ -30,7 +30,7 @@ void fdctrl_dma_read(){
         outb(0x0a, 0x02);       /* unmask dma channel 2 */
 }
 
-void fdctrl_dma_wrirte(){
+void fdctrl_dma_write(){
         outb(0x0a, 0x06);       /* mask dma channel 2 */
         outb(0x0b, 0x5a);       /* single transfer, address increment, autoinit, write, channel 2 */
         outb(0x0a, 0x02);       /* unmask dma channel 2 */
@@ -347,6 +347,7 @@ void init_fdctrl(){
         unsigned int    *fat12_fat2;
         unsigned int    *fat12_data;
         unsigned int    *floppy_fat12;
+        unsigned int    *temp;
 
         int sectors=0;
         int test_cluster=0;
@@ -360,8 +361,11 @@ void init_fdctrl(){
         fdctrl_reset();
         fdctrl_drive_data (13, 1, 0xf, 1);
         
-        floppy_fat12 = kmalloc(2880 * 512);
-        memset(floppy_fat12, 0x41, 2880 * 512);
+        i = 0;
+        temp = fdctrl_read_sector(i);
+        printf("DMA Phy:0x%x\n", temp);
+        //floppy_fat12 = kmalloc(2880 * 512);
+        //memset(floppy_fat12, 0x41, 2880 * 512);
 
 
         /* 
@@ -374,8 +378,8 @@ void init_fdctrl(){
         printf("[+] memseted\n");
         
         /* bootsector region */
-        fat12 = (fs_bootloader_t *) kmalloc(sizeof(fs_bootloader_t));
-        memcpy(fat12,fdctrl_read_sector(0),sizeof(fs_bootloader_t));
+        //fat12 = (fs_bootloader_t *) kmalloc(sizeof(fs_bootloader_t));
+        //memcpy(fat12,fdctrl_read_sector(0),sizeof(fs_bootloader_t));
 
         /* Some FAT12 information */
         /*
