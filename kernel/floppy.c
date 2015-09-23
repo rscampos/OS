@@ -348,71 +348,70 @@ void init_fdctrl(){
         unsigned int    *fat12_data;
         unsigned int    *floppy_fat12;
         unsigned int    *temp;
-
-        int sectors=0;
-        int test_cluster=0;
-        int first_second=0;
+        char            *buffer_bpb_oem;
+        int sectors     = 2880;
+        int test_cluster= 0;
+        int first_second= 0;
         unsigned short int next_cluster;
         unsigned int * addr_alloc;
         unsigned int offsec_fat1, offsec_fat2, offsec_root_dir, byte_offset;
-        int i,j;
+        int i,j,size;
+
         register_interrupt_handler(IRQ6,&fdctrl_callback);
         fdctrl_init_dma();
         fdctrl_reset();
-        fdctrl_drive_data (13, 1, 0xf, 1);
+        fdctrl_drive_data(13, 1, 0xf, 1);
         
-        i = 0;
-        temp = fdctrl_read_sector(i);
-        printf("DMA Phy:0x%x\n", temp);
-        //floppy_fat12 = kmalloc(2880 * 512);
-        //memset(floppy_fat12, 0x41, 2880 * 512);
+        floppy_fat12 = kmalloc(sectors * 512);
+        memset(floppy_fat12, 0x00, sectors * 512);
 
-
-        /* 
-        for(i=0;i<2880;i++){
+        /* Alloc space for all floppy */
+        for(i=0;i<sectors;i++){
                 fat12 = fdctrl_read_sector(i);
                 memcpy(floppy_fat12+(i*(512/4)),fat12,512);
         }
-        */
+        
         
         printf("[+] memseted\n");
         
         /* bootsector region */
-        //fat12 = (fs_bootloader_t *) kmalloc(sizeof(fs_bootloader_t));
-        //memcpy(fat12,fdctrl_read_sector(0),sizeof(fs_bootloader_t));
+        fat12 = (fs_bootloader_t *) kmalloc(sizeof(fs_bootloader_t));
+        memcpy(fat12,fdctrl_read_sector(0),sizeof(fs_bootloader_t));
 
         /* Some FAT12 information */
+        /* 
+        printf("[+] Disk information:\n");
+        printf("  [-] Disk Size:%dB (%dKB)\n",
+        fat12->bpb_total_sectors * fat12->bpb_bytes_sector,
+        (fat12->bpb_total_sectors * fat12->bpb_bytes_sector)/1024);
+        printf("  [-] FAT12 Sectors:%d FAT Num:%d Sectors FAT:%d Sectors Track:%d\n",
+        fat12->bpb_total_sectors,
+        fat12->bpb_fatnumbers,
+        fat12->bpb_sectors_fat,
+        fat12->bpb_sectors_track);
+        */
         /*
-           printf("[+] Disk information:\n");
-           printf("  [-] Disk Size:%dB (%dKB)\n",
-           fat12->bpb_total_sectors * fat12->bpb_bytes_sector,
-           (fat12->bpb_total_sectors * fat12->bpb_bytes_sector)/1024
-           );
-           printf("  [-] FAT12 Sectors:%d FAT Num:%d Sectors FAT:%d Sectors Track:%d\n",
-           fat12->bpb_total_sectors,
-           fat12->bpb_fatnumbers,
-           fat12->bpb_sectors_fat,
-           fat12->bpb_sectors_track
-           );
-           fat12->bpb_oem[7]               = '\00';
-           fat12->bpb_ext_vol_label[10]    = '\00';
-           fat12->bpb_ext_file_system[7]   = '\00';
-           */
+        buffer_bpb_oem = (char *) kmalloc(9);
+        memcpy(buffer_bpb_oem,fat12->bpb_oem,8);
+        buffer_bpb_oem[8] = '\00';
+        */
+       /* 
+        fat12->bpb_ext_vol_label[10]    = '\00';
+        fat12->bpb_ext_file_system[7]   = '\00';
         printf("  [-] FAT12 Reserved Sectors: %d\n",fat12->bpb_reserved_sec);
-        /*
-           printf("  [-] FAT12 RD (Root Dir): %d Sectors\n",(fat12->bpb_root_entries * 32)/fat12->bpb_bytes_sector);
-           printf("  [-] FAT12 OEM: %s\n",fat12->bpb_oem);
-           printf("  [-] FAT12 Vol Label: %s\n",fat12->bpb_ext_vol_label);
-           printf("  [-] FAT12 FS: %s\n",fat12->bpb_ext_file_system);
-           printf("[+] Bootable: %s\n", (fat12->bootable_partition == 0xAA55 ? "Yes" : "No" ));
-           */
-
+        printf("  [-] FAT12 RD (Root Dir): %d Sectors\n",(fat12->bpb_root_entries * 32)/fat12->bpb_bytes_sector);
+        //printf("  [-] FAT12 OEM: %s.\n",buffer_bpb_oem);
+        //puts(buffer_bpb_oem); 
+        printf("  [-] FAT12 Vol Label: %s\n",fat12->bpb_ext_vol_label);
+        printf("  [-] FAT12 FS: %s\n",fat12->bpb_ext_file_system);
+        printf("[+] Bootable: %s\n", (fat12->bootable_partition == 0xAA55 ? "Yes" : "No" ));
+    */
         /* Getting the root directory offset sectors (offsec)*/
         offsec_fat1     = fat12->bpb_reserved_sec;
         offsec_fat2     = fat12->bpb_reserved_sec + fat12->bpb_sectors_fat;
         offsec_root_dir = fat12->bpb_reserved_sec + (fat12->bpb_fatnumbers * fat12->bpb_sectors_fat);
 
-        //printf("  [-] FAT12 FAT1:%d FAT2:%d RD:%d\n",offsec_fat1,offsec_fat2,offsec_root_dir);
+        printf("  [-] FAT12 FAT1:%d FAT2:%d RD:%d\n",offsec_fat1,offsec_fat2,offsec_root_dir);
         
         /* FAT1 allocation */
         fat12_fat1 = kmalloc(fat12->bpb_sectors_fat * fat12->bpb_bytes_sector);
@@ -424,13 +423,12 @@ void init_fdctrl(){
         }
         
         /* root directory */
+        
         fat12_rd = (fs_root_dir_t *) kmalloc(sizeof(fs_root_dir_t));
         memcpy(fat12_rd,fdctrl_read_sector(offsec_root_dir),sizeof(fs_root_dir_t));
         
-        test_cluster = 1; 
-        while(test_cluster-- > 0){
-
-                /* Check if is the last file */
+        while(1){
+                // Check if is the last file
                 if(fat12_rd->file_name[0] == 0x00) break;
 
                 printf("[+] Filename: %c%c%c%c%c%c%c%c",fat12_rd->file_name[0],fat12_rd->file_name[1],
@@ -442,12 +440,12 @@ void init_fdctrl(){
                 printf("  [-] File Size:%d\n",fat12_rd->file_size);
                 printf("  [-] First Cluster:%x\n",fat12_rd->file_first_cluster);
 
-                /* Temporary code, just to test the clusters */
+                //Temporary code, just to test the clusters
                 next_cluster = get_next_cluster(fat12_rd->file_first_cluster);
 
-                /* get the next file */
+                // get the next file
                 fat12_rd +=32;
         }
-
+ 
         printf("\n"); 
 }
