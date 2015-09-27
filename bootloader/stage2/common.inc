@@ -3,9 +3,9 @@
 ;	- common variables
 ;*********************************************
 
-%define         MULTIBOOT	0x8000	        ; store multiboot infose
-%define         TEMPMEM  	0x9500	        ; for Root Directory Table (segment)
-%define         KERNELSTART	0x9600	        ; place to copy the Kernel before PMode
+%define         MULTIBOOT	0x4000	        ; store multiboot infose
+%define         TEMPMEM  	0x5500	        ; for Root Directory Table (segment)
+%define         KERNELSTART	0x5600	        ; place to copy the Kernel before PMode
 
 
 ;-----------------------------------------------;

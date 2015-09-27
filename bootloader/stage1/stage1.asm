@@ -4,6 +4,8 @@
 ;	Operating Systems Development Tutorial
 ;*********************************************
 
+; address to load stage2
+%define         STAGE2       0x3000
  
 bits	16		; We are still in 16 bit Real Mode
 org	0x7c00		; We are loaded by BIOS at 0x7C00
@@ -32,6 +34,8 @@ bsExtBootSignature:	DB 0x29
 bsSerialNumber:		DD 0xa0a1a2a3
 bsVolumeLabel:		DB "MOS FLOPPY "
 bsFileSystem:		DB "FAT12   "
+
+
 
 ;----------------------------------------------------------
 ; printing - si
@@ -159,7 +163,7 @@ LOAD_IMAGE:
 		mov	WORD[countersectors], ax	; store counter for address
 		mov	bx, WORD[bpbBytesPerSector]	; how many bytes per sector
 		mul	bx				; 
-		mov     bx, 0x1200			; the base address - we are loading the image to 0x9000
+		mov     bx, STAGE2-0x200                ; the base address - we are loading the image to 0x9000
 		add	bx, ax				; memory position to put the sector
 		CALL	READ_SECTORS			; load the part of the image to memory
 		mov	dx, WORD[nextcluster]		; get the last cluster
@@ -224,9 +228,8 @@ FIND:
 ;*************************************************;
  
 main:
-	mov	ax, 0x07c0		
-	mov	es, ax
-
+	mov	ax, 0x07c0	
+        mov     es, ax
     	;---------------------------
 	; calc some constants
     	;---------------------------
@@ -251,9 +254,12 @@ main:
     	;---------------------------
 	call	LOAD_ROOT			; Load the RDT
 	call	FIND				; Find the file
-	call	LOAD_FAT			; Load the FAT to memory
+       	call	LOAD_FAT			; Load the FAT to memory (es:ax -> 0x7e00)
+
+        mov     ax, 0                          
+        mov     es, ax                          ; resets es
 	call	LOAD_IMAGE			; Load the image
-	jmp	0x9000				; Execute the image (stage 2)
+	jmp	STAGE2				; Execute the image (stage 2)
 
 	cli					; Clear all Interrupts
 	hlt					; halt the system

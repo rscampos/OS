@@ -6,7 +6,7 @@
 
 
 bits    16              ; We are still in 16 bit Real Mode
-org     0x9000          ; stage1 jump to 0x9000, so "org 0x9000"
+org     0x3000          ; After loading stage2 at 0x3000, stage2 jumps to it
 start:  jmp Stage2
 
 ;----------------------------------------------------------
