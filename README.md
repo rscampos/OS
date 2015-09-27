@@ -3,7 +3,8 @@
 My personal project - Operation System development.
 
 # TODO
-- [ ] Problema no carregamento da imagem do kernel. Se for muito grande o tamanho do kernel, da problema.
+- [x] Problema no carregamento da imagem do kernel. Se for muito grande o tamanho do kernel, da problema. 
+**Corrigido:** 27/09/15: Image carregada no endereço 0x3000. Commit: [402033ca9daaf47093d13d2df854847f8c44036f].
 - [x] Problema na função fdctrl_init_dma(). Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
 - [x] Problema no mecanismo de paginação. **Corrigido:** *21/09/15: A20 estava desabilitado - A20 foi habilitado.*
 * Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
