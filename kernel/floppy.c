@@ -4,6 +4,7 @@
 
 static u32int _fdctrl_irq;
 u32int _currentdrive;
+fs_bootloader_t *fat12;
 
 void fdctrl_callback(registers_t regs){
         //printf("[+] Interrupt: IRQ6 raised\n");
@@ -160,9 +161,9 @@ void fdctrl_reset(){
 }
 
 void fdctrl_lba_to_chs(int sectorLBA, int *track, int *head, int *sector){
-        *sector = (sectorLBA % FLPY_SECTORS_PER_TRACK) + 1;
-        *head   = (sectorLBA / FLPY_SECTORS_PER_TRACK) % FLPY_SECTORS_PER_TRACK;
+        *head   = (sectorLBA % (FLPY_SECTORS_PER_TRACK * 2)) / (FLPY_SECTORS_PER_TRACK);
         *track  = (sectorLBA / (FLPY_SECTORS_PER_TRACK * 2));
+        *sector = (sectorLBA % FLPY_SECTORS_PER_TRACK) + 1;
 }
 
 int fdctrl_seek(int track, int head){
@@ -262,11 +263,10 @@ void fdctrl_disable_controller(){
         fdctrl_write_dor(_currentdrive);
 }
 
-/* Return the next cluster.
-*/
-unsigned short int get_next_cluster(unsigned short int cluster){
-        printf("Cluster:0x%x\n", cluster);
-        printf("Next:0x%x\n", cluster);
+/* Return the next cluster */
+unsigned short get_next_cluster(unsigned short cluster){
+        printf("Cluster:%d\n", cluster);
+        printf("Next:%d\n", cluster);
         /*
            if(fat12_rd->file_first_cluster % 2 == 0){
            byte_offset = fat12_rd->file_first_cluster*1.5;
@@ -290,9 +290,19 @@ unsigned short int get_next_cluster(unsigned short int cluster){
            */
 }
 
+void show_content(fs_root_dir_t *file){
+        unsigned int offset, content, temp;
+
+        offset  = (file->file_first_cluster - 2);
+        content = (0x4200/0x200) + offset;
+        temp    = fat12 + content;
+        printf("   =>Content:0x%s\n", temp);
+}
+
 void show_files(fs_root_dir_t *fat12_rd){
+        unsigned short next_cluster;
+
         printf("[+] Files:\n");
-        
         while(1){
                 if(fat12_rd->file_name[0] == 0x00) break; /* is the last? */
 
@@ -301,13 +311,14 @@ void show_files(fs_root_dir_t *fat12_rd){
                 fat12_rd->file_name[5],fat12_rd->file_name[6],fat12_rd->file_name[7]);
 
                 printf(".%c%c%c\n",fat12_rd->file_ext[0],fat12_rd->file_ext[1],fat12_rd->file_ext[2]);
-                printf(" |- Attr:0x%x size:%d cluster:%d\n\n",fat12_rd->file_attrib,fat12_rd->file_size,
+                printf(" |- Attr:0x%x size:%d cluster:%d\n",fat12_rd->file_attrib,fat12_rd->file_size,
                                 fat12_rd->file_first_cluster);
-        
-                //Temporary code, just to test the clusters
-                //next_cluster = get_next_cluster(fat12_rd->file_first_cluster);
-                // get the next file
+
+                if(fat12_rd->file_size <= 100)
+                        show_content(fat12_rd);        
+                
                 fat12_rd++;
+                puts("\n");
         }
 }
 
@@ -339,7 +350,7 @@ void init_fdctrl(){
         _fdctrl_irq = 0;
         _currentdrive = 0;
 
-        fs_bootloader_t *fat12;
+
         fs_root_dir_t   *fat12_rd;
         unsigned int    *fat12_fat1;
         unsigned int    *fat12_fat2;

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DEVICE="/dev/loop0"
+#DEVICE="/tmp/floppy.img"
 SO_PATH=`pwd`/../
 KERNEL="$SO_PATH/kernel"
 MEM=512
