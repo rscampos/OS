@@ -72,7 +72,7 @@ void pmm_init_page(){
         //printf("Start of the Phy: 0x%x\n", phy_addr);
         kernel_directory = (page_directory_t*) kmalloc_a(sizeof(page_directory_t),1);
         
-        printf("PD created at:0x%x (%d)\n", kernel_directory, sizeof(page_directory_t));
+        //printf("PD created at:0x%x (%d)\n", kernel_directory, sizeof(page_directory_t));
         
         memset(kernel_directory,0,sizeof(page_directory_t));
         
@@ -93,7 +93,7 @@ void pmm_init_page(){
         //show_page(get_page(page_va,1,kernel_directory),page_va, kernel_directory); 
         //show_page(page_t * page, u32int page_va, page_directory_t * page_dir); 
         
-        printf("Numbers frames:%d-%d=%d \n",number_frames,frames_used, (number_frames-frames_used));
+        //printf("Numbers frames:%d-%d=%d \n",number_frames,frames_used, (number_frames-frames_used));
         
         
         //page_tmp = get_page((pages_used-1)*PAGE_SIZE,1,kernel_directory);
@@ -148,7 +148,7 @@ void pmm_init_bitmap(){
         /* Alloc memory for bitmap */
         number_frames = PMM_MEM_TO_M_B(memory_len)/PMM_FRAME_SIZE;
         bitmap = kmalloc(number_frames/PMM_BITMAP_SCHUNCK);
-        printf("Bitmap address:0x%x\n", bitmap);
+        //printf("Bitmap address:0x%x\n", bitmap);
         memset(bitmap,0,number_frames/PMM_BITMAP_SCHUNCK);
 
         /* From 0 to 1MB, there's just 159 (0 to 158)frames 

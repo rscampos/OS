@@ -27,8 +27,8 @@ int main()
         }
         */
 
-        printf("addr:0x%x\n",addr_k);
-        puts("done.\n");
+        //printf("addr:0x%x\n",addr_k);
+        //puts("done.\n");
  
         return 1;
 }

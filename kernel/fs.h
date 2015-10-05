@@ -1,7 +1,9 @@
-typedef u32int (*read_type_t)(struct fs_node*,u32int,u32int,u8int*);
-typedef u32int (*write_type_t)(struct fs_node*,u32int,u32int,u8int*);
 typedef void (*open_type_t)(struct fs_node*);
 typedef void (*close_type_t)(struct fs_node*);
+
+typedef u32int (*read_type_t)(struct fs_node*,u32int,u32int,u8int*);
+typedef u32int (*write_type_t)(struct fs_node*,u32int,u32int,u8int*);
+
 typedef struct dirent * (*readdir_type_t)(struct fs_node*,u32int);
 typedef struct fs_node * (*finddir_type_t)(struct fs_node*,char *name);
 
@@ -23,6 +25,8 @@ typedef struct fs_node
         u32int flags;           /* Includes the node type (Directory, file etc). */
         u32int inode;           /* Provides a way for a filesystem to identify files. */
         u32int impl;            /* An implementation-defined number. */
+        u32int position;        /* Offset inside the cluster. */
+        u32int ccluster;        /* Current cluster. */
         read_type_t read;       /* Typedefs are just function pointers. */
         write_type_t write;
         open_type_t open;

@@ -97,7 +97,7 @@ blockdev --flushbufs $DEVICE
 ################################################################################
 
 echo "[+] Copying stage2, kernel and all the files to \"$DIR_FS\"."
-cp $DIR_FILES/* $DIR_FS
+cp -r $DIR_FILES/* $DIR_FS
 
 echo "[+] Flushing the \"$DEVICE\" (will update the image)."
 blockdev --flushbufs $DEVICE
