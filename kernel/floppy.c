@@ -264,30 +264,22 @@ void fdctrl_disable_controller(){
 }
 
 /* Return the next cluster */
-unsigned short get_next_cluster(unsigned short cluster){
-        printf("Cluster:%d\n", cluster);
-        printf("Next:%d\n", cluster);
-        /*
-           if(fat12_rd->file_first_cluster % 2 == 0){
-           byte_offset = fat12_rd->file_first_cluster*1.5;
-           }else{
-           byte_offset = (fat12_rd->file_first_cluster-1)*1.5+1;
-           }
-           printf("    [-] Byte offset:%d\n", byte_offset);
-           if(first_second){
-           next_cluster = (next_cluster && 0xFFF0) >>4;
-           }else{
-           next_cluster = next_cluster && 0x0FFF;
-           }
+unsigned short get_next_cluster(u16int cluster){
+        u16int next_cluster, offset;
+        void * addr_fat;
 
+        offset   = cluster * 1.5;
+        addr_fat = fat12 + fat12->bpb_reserved_sec;
+        addr_fat += offset;
 
-           buffer_init     = fdctrl_read_sector(offsec_fat1);
+        memcpy(&next_cluster, addr_fat, sizeof(u16int));
 
-           next_cluster    = (buffer_init[byte_offset+1]<<4) + buffer_init[byte_offset];
-           printf("0x%x 0x%x\n",buffer_init[byte_offset+1]<<4, buffer_init[byte_offset]);
+        if(!(cluster % 2))
+                next_cluster = next_cluster & 0x0FFF;
+        else
+                next_cluster = (next_cluster & 0xFFF0) >> 4;
 
-           printf("0x%x \n", next_cluster); 
-           */
+        return next_cluster;
 }
 
 /* if 0 retunrs the rootdir; else (subdir case)*/
@@ -312,7 +304,7 @@ void show_content(fs_root_dir_t *file){
 }
 
 void show_tree(fs_root_dir_t *fat12_rd){
-        unsigned short next_cluster;
+        u16int next_cluster;
 
         printf("/\n");
         while(1){
@@ -324,8 +316,17 @@ void show_tree(fs_root_dir_t *fat12_rd){
 
                 printf(".%c%c%c",fat12_rd->file_ext[0],fat12_rd->file_ext[1],fat12_rd->file_ext[2]);
                 
-                printf(" (%s size:%d cluster:%d)\n",(fat12_rd->file_attrib == 0x20 ? "FILE" : "DIR "),
+                printf(" (%s size:%d cluster:%d)",(fat12_rd->file_attrib == 0x20 ? "FILE" : "DIR "),
                                                     fat12_rd->file_size, fat12_rd->file_first_cluster);
+                
+                printf(" (Next cluster:");
+                next_cluster = get_next_cluster(fat12_rd->file_first_cluster);
+                while(next_cluster  > 0){
+                        printf(" %d",next_cluster);
+                        next_cluster = get_next_cluster(next_cluster);
+                }
+                printf(")\n");
+                
                 if((fat12_rd->file_attrib == 0x10) && fat12_rd->file_name[0] != '.')
                         show_tree(get_fat12_rootdir(fat12_rd->file_first_cluster));
                 

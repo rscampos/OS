@@ -186,17 +186,15 @@ void strcpy(char * dest, char * src){
         dest[i]='\0';
 }
 
-void memcpy(char * dest, char * src, int n){
-        int i=0;
-        for(i;i<n;i++)
-                dest[i]=src[i];
+/* modifications from freebsd */
+void memcpy (void *dest, const void *src, int len)
+{
+        char *d = dest;
+        const char *s = src;
+        while (len--)
+                *d++ = *s++;
 }
-/*
-void strcmp(char *s1, char *s2){
-        int i=0;
-        while(s1[i]!=s2[i])
-}
-*/
+
 void strcat(char * dest, char * src){
         int cdest=0, csrc=0;
         while(dest[cdest]!='\0'){
