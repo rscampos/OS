@@ -8,7 +8,7 @@ typedef int (*close_vfs_t)(struct vfs_node *);
 typedef struct vfs_node{
         /* For FAT12 - 8 name + 3 ext + 2 extras (NULL/.) */
         char            filename[13];
-        u32int          inode; 
+        u16int          inode; 
         u8int           attr;
         u32int          size;
         u16int          first_cluster;
@@ -18,9 +18,14 @@ typedef struct vfs_node{
         write_vfs_t     write;
         close_vfs_t     close;
         /* TODO - time info */
+        struct vfs_node *next;
+        struct vfs_node *subdir;
 }vfs_node_t;
 
 int read_vfs(vfs_node_t *node, void *buffer, u32int size);
 int write_vfs(vfs_node_t *node, const void *buffer, u32int size);
 int close_vfs(vfs_node_t *node);
 vfs_node_t * open_vfs(const char *pathname);
+
+#define VFS_DIRECTORY    0X10
+#define VFS_FILE         0X20

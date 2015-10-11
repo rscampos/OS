@@ -5,6 +5,10 @@
 #include "floppy.h"
 
 fs_bootloader_t *fat12;
+vfs_node_t *root_fs;
+vfs_node_t *subdir_temp;
+u8int root_fs_lock;
+u16int index_inode;
 
 /* Return the next cluster */
 unsigned short get_next_cluster(u16int cluster){
@@ -46,19 +50,70 @@ void show_content(fs_root_dir_t *file){
         printf("   =>Content:0x%s\n", temp);
 }
 
-void show_tree(fs_root_dir_t *fat12_rd){
+void fat12_filename_dos(fs_root_dir_t *fat12_rd, vfs_node_t *node){
+        u8int index=8;
+        int i;
+
+        /* TODO - ponto apenas se tiver ext e se tiver, colocar logo apos nome */
+        for(i=7;i>=0;i--){
+                if(fat12_rd->file_name[i] == 0x20)
+                        index--;
+                else
+                        break;
+        }
+                      
+        memcpy(node->filename,fat12_rd->file_name,index);
+        
+        if(fat12_rd->file_ext[0] != 0x20){
+                memset(&node->filename[index],'.',1);
+                memcpy(&node->filename[index+1],fat12_rd->file_ext,3);
+                memset(&node->filename[index+4],0x0,13-(index+4));
+        }else{
+                memset(&node->filename[index+4],0x0,13-(index-1)); 
+        }
+
+}
+
+void show_tree(){
         u16int next_cluster;
+        vfs_node_t *node, *prev=0;  
+        vfs_node_t *subdir_node;
+
+        subdir_node = subdir_temp;
 
         printf("/\n");
         while(1){
                 if(fat12_rd->file_name[0] == 0x00) break; /* is the last? */
+                
+                /* New node created */
+                node = kmalloc(sizeof(vfs_node_t));
+       
+                fat12_filename_dos(fat12_rd, node);
+                node->inode             = ++index_inode;
+                node->attr              = fat12_rd->file_attrib; 
+                node->size              = fat12_rd->file_size;
+                node->first_cluster     = fat12_rd->file_first_cluster; 
+                node->current_cluster   = fat12_rd->file_first_cluster;
+                node->offset            = 0;
+             
+                if(prev)
+                        prev->next      = node;
+                else{
+                        if(!root_fs_lock){ /* root file */
+                                root_fs = node;
+                                root_fs_lock = 1;
+                        }
 
-                printf("|-- %c%c%c%c%c%c%c%c",fat12_rd->file_name[0],fat12_rd->file_name[1],
-                                fat12_rd->file_name[2],fat12_rd->file_name[3],fat12_rd->file_name[4],
-                                fat12_rd->file_name[5],fat12_rd->file_name[6],fat12_rd->file_name[7]);
+                        if(subdir_node) /* first node of subdir*/
+                                subdir_node->subdir = node;
 
-                printf(".%c%c%c",fat12_rd->file_ext[0],fat12_rd->file_ext[1],fat12_rd->file_ext[2]);
+               }
 
+                prev    = node; 
+
+                printf("|-- %s", node->filename);
+                printf(" inode:%d",node->inode);
+                /*
                 printf(" (%s size:%d cluster:%d)",(fat12_rd->file_attrib == 0x20 ? "FILE" : "DIR "),
                                 fat12_rd->file_size, fat12_rd->file_first_cluster);
 
@@ -68,16 +123,74 @@ void show_tree(fs_root_dir_t *fat12_rd){
                         printf(" %d",next_cluster);
                         next_cluster = get_next_cluster(next_cluster);
                 }
-                printf(")\n");
 
-                if((fat12_rd->file_attrib == 0x10) && fat12_rd->file_name[0] != '.')
+                printf(")");
+
+
+                */
+
+                printf("\n");
+                
+                /* Found a subdir */
+                if((node->attr == 0x10) && fat12_rd->file_name[0] != '.'){
+                        subdir_temp = node; /* mark the subdir */
                         show_tree(get_fat12_rootdir(fat12_rd->file_first_cluster));
+                        subdir_temp = 0; /* no subdir anymore */
+                }
 
                 //if(fat12_rd->file_size <= 600)
                 //        show_content(fat12_rd);        
 
                 fat12_rd++;
                 //puts("\n");
+        }
+}
+
+
+void fat12_initialize(fs_root_dir_t *fat12_rd){
+        u16int next_cluster;
+        vfs_node_t *node, *prev=0;  
+        vfs_node_t *subdir_node;
+        
+        /* get the prev subdir reference */ 
+        subdir_node = subdir_temp;
+
+        while(1){
+                if(fat12_rd->file_name[0] == 0x00) break; /* is the last? */
+                
+                /* Create a new node */
+                node = kmalloc(sizeof(vfs_node_t));
+       
+                fat12_filename_dos(fat12_rd, node);
+                node->inode             = ++index_inode;
+                node->attr              = fat12_rd->file_attrib; 
+                node->size              = fat12_rd->file_size;
+                node->first_cluster     = fat12_rd->file_first_cluster; 
+                node->current_cluster   = fat12_rd->file_first_cluster;
+                node->offset            = 0;
+             
+                if(prev)/* is not the first one */
+                        prev->next      = node;
+                else{   /* when the node is the first one (root or subdir)*/
+                        if(!root_fs_lock){ /* root file */
+                                root_fs = node;
+                                root_fs_lock = 1;
+                        }
+
+                        if(subdir_node) /* first node of subdir */
+                                subdir_node->subdir = node;
+               }
+
+                prev = node; 
+
+                /* Found a subdir */
+                if((node->attr == 0x10) && fat12_rd->file_name[0] != '.'){
+                        subdir_temp = node; /* mark the subdir */
+                        fat12_initialize(get_fat12_rootdir(fat12_rd->file_first_cluster));
+                        subdir_temp = 0; /* no subdir anymore */
+                }
+
+                fat12_rd++;
         }
 }
 
@@ -121,6 +234,10 @@ void init_fat12(){
         fs_root_dir_t   *fat12_rd;
         void            *floppy_fat12, *temp;
         int             sectors=2880, i=0;
+        root_fs         = 0;
+        subdir_temp     = 0;
+        root_fs_lock    = 0;
+        index_inode     = 0;
 
         floppy_fat12 = kmalloc(sectors * 512);
         memset(floppy_fat12, 0x00, sectors * 512);
@@ -139,8 +256,8 @@ void init_fat12(){
         /* 0 - root directory */
         fat12_rd = get_fat12_rootdir(0);
 
-        /* show files */
-        show_tree(fat12_rd);
+        /* Load files and dir to memory */
+        fat12_initialize(fat12_rd);
 
         //printf("[+] floppy end!\n");
 }
