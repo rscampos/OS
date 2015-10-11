@@ -40,6 +40,11 @@ int setuphal(multiboot_info_t* bootinfo)
         ///puts("done.\n");
        
         pmm_memory_map(bootinfo);  
+        
+        /* Setup the floppy driver */
         init_fdctrl();
+        
+        init_fat12();
+
         return 1;
 }

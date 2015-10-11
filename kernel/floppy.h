@@ -1,6 +1,27 @@
+void fdctrl_callback(registers_t regs);
+void fdctrl_init_dma();
+void fdctrl_dma_read();
+void fdctrl_dma_write();
+void fdctrl_write_dor(u8int val);
+u8int fdctrl_read_status();
+void fdctrl_write_ccr(u8int val);
+u8int fdctrl_send_cmd(u8int cmd);
+u8int fdctrl_read_data();
+void fdctrl_drive_data(u32int steprate, u32int loadt, u32int unloadt, u32int dma);
+void fdctrl_wait_irq();
+void fdctrl_check_int(u32int *st0, u32int *cyl);
+void fdctrl_control_motor(u32int flag);
+int fdctrl_calibrate(u32int drive);
+void fdctrl_reset();
+void fdctrl_lba_to_chs(int sectorLBA, int *track, int *head, int *sector);
+int fdctrl_seek(int track, int head);
+void fdctrl_read_sector_imp(int track, int head, int sector );
+u32int* fdctrl_read_sector(u32int sectorLBA);
+void fdctrl_enable_controller();
+void fdctrl_disable_controller();
+
 /* Names were get from qemu FDC (hw/block/fdc.h)
 */
-
 enum{
         FDRIVE_RATE_500K = 0x00, /* 500 Kbps */
         FDRIVE_RATE_300K = 0x01, /* 300 Kbps */
@@ -74,56 +95,7 @@ enum FLPYDSK_SECTOR_DTL {
 };
 
 enum FLPYDSK_INFOS{
-        FLPY_SECTORS_PER_TRACK  =       0x12
-
+        FLPY_SECTORS_PER_TRACK  =       0x12,
+        DMA_BUFFER              =       0x1000
 };
 
-const int DMA_BUFFER            =       0x1000;
-
-
-/* Root Directory Struct */
-typedef struct fs_root_dir
-{
-        unsigned char   file_name[8];
-        unsigned char   file_ext[3];
-        unsigned char   file_attrib;
-        unsigned char   file_reserved;          /* Reserved for Windows NT      */
-        unsigned char   file_ctime_ms;
-        unsigned short  file_ctime_smh;         /* Second, Minutes, Hours       */
-        unsigned short  file_cyear_hmy;         /* Hours, Month, Year           */
-        unsigned short  file_last_access;       /* Last access date             */
-        unsigned short  file_ea_index;
-        unsigned short  file_last_mod_time;     /* Last modified time           */
-        unsigned short  file_last_mod_date;     /* Last modified date           */ 
-        unsigned short  file_first_cluster;
-        unsigned int    file_size;
-}__attribute__((packed)) fs_root_dir_t;
-
-
-typedef struct fs_bootloader
-{
-        unsigned char   jump[3];
-        unsigned char   bpb_oem[8];             /* OEM Identifier */
-        unsigned short  bpb_bytes_sector;       /* Bytes per Sector */
-        unsigned char   bpb_sectors_cluster;    /* Sectors per Cluster */
-        unsigned short  bpb_reserved_sec;       /* Reserved Sectors */
-        unsigned char   bpb_fatnumbers;         /* Numbers of FAT */
-        unsigned short  bpb_root_entries;       /* Root Entries */
-        unsigned short  bpb_total_sectors;      /* 2880 for FAT12 */
-        unsigned char   bpb_media;              /* byte code information */
-        unsigned short  bpb_sectors_fat;        /* Sectors per FAT - 9 */
-        unsigned short  bpb_sectors_track;      /* Sectors per Track - 18 */
-        unsigned short  bpb_head_track;         /* Heads per Track - 2 */
-        unsigned int    bpb_hidden_sectors;     /* Usually 0 */
-        unsigned int    bpb_total_sec_big;      /* Total Sectors Big */
-
-        /* ext */
-        unsigned char   bpb_ext_driver_number;  /* Driver Number */
-        unsigned char   bpb_ext_unused;         /* Unused - 0 */
-        unsigned char   bpb_ext_signature;      /* Ext Signature - 0x28||0x29 */
-        unsigned int    bpb_ext_serial_number;  /* Serial number - 0x41384022 */
-        unsigned char   bpb_ext_vol_label[11];  /* Volume Label */
-        unsigned char   bpb_ext_file_system[8]; /* File System Name */
-        unsigned char   boot_code[448];         /* Boot Code */
-        unsigned short  bootable_partition;     /* 0xAA55 */
-}__attribute__((packed)) fs_bootloader_t;
