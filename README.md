@@ -13,4 +13,5 @@ Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
    - [x] Obtém próximo cluster. **Feito:** 05/08/2014. Commit: [b45cae3a54b92f44fdc8227372a88fc8a5f3fc92]. 
 - [ ] Problema ao alocar 4MB, ao tentar alocar PT#193, ocorre um problema na alocação uma vez que não tem mais páginas disponíveis. 
 - [ ] Fazer scroll. 
-- [ ] Problema com static inode.
+- [ ] Fazer vários testes com o filesystem.
+   - [ ] Não subir tudo para a memória. Subir apenas cabeçalhos e não conteúdos.

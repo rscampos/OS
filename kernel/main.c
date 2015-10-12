@@ -18,8 +18,9 @@ int main()
         int i;
         u32int addr_k;
         vfs_node_t * node;
+        char * pathname;
         char *banner = "Welcome to my operation system!\n";
-               
+        ptr = kmalloc(512);
         //for(i=0;i<=8192;i++){ - error
         /*
         for(i=0;i<=8191;i++){
@@ -32,7 +33,11 @@ int main()
 
         //printf("addr:0x%x\n",addr_k);
         //puts("done.\n");
-        node = open_vfs("/tmp/dir1/dir2/TEMP.TXT");
-     
+        //
+        pathname = "/ROOT/TEMP.TXT";
+        printf("Reading %s\n",pathname);
+        node = open_vfs(pathname);
+        read_vfs(node,ptr,512);
+        printf("Conteudo:%s\n",ptr);
         return 1;
 }

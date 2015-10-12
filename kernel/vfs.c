@@ -24,25 +24,35 @@ int close_vfs(vfs_node_t *node){
                 return -1;
 }
 
-vfs_node_t * open_vfs(const char *pathname){
+vfs_node_t * open_vfs(char *pathname){
         vfs_node_t * temp;
+        char *search=0;
+
         temp = root_fs;
-        int count_level=0,i;
-        for(i=1;i<strlen(pathname);i++)
+        int i,s_path;
+        s_path = strlen(pathname) + 2;
+        
+        for(i=0;i<s_path;i++){
+                if(pathname[i]=='/' || pathname[i]=='\0'){
+                        pathname[i]=0x00;
+                        if(search){
+                                while(temp){
+                                        //printf("Search:%s filename:%s\n",search, temp->filename); /* TODO */
+                                        if(strcmp(search,temp->filename) == 0){
+                                                //printf("Found:%s (i:%d s_path:%d)\n",temp->filename,i,s_path);
+                                                if(i+1 == s_path)
+                                                        return temp;
+                                                temp = temp->subdir; /* enter subdir */
+                                                break;
+                                        }
+                                        temp = temp->next;
+                                }
+                        }
 
-                if(pathname[i]=='/')
-                        count_level++;
-
-
-        printf("pathname:%s (%d)\n", pathname, count_level);
-        while(temp){
-                printf("Found:%s\n",temp->filename);
-                temp = temp->next;
+                        search = &pathname[i+1];
+                }
         }
-
-
-
-
+        //printf("File:%s, %s\n",search,temp->filename);
 
         return -1;
 }

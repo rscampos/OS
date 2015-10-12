@@ -25,7 +25,7 @@ typedef struct vfs_node{
 int read_vfs(vfs_node_t *node, void *buffer, u32int size);
 int write_vfs(vfs_node_t *node, const void *buffer, u32int size);
 int close_vfs(vfs_node_t *node);
-vfs_node_t * open_vfs(const char *pathname);
+vfs_node_t * open_vfs(char *pathname);
 
 #define VFS_DIRECTORY    0X10
 #define VFS_FILE         0X20

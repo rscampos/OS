@@ -12,7 +12,16 @@ u16int index_inode;
 
 /* Nodes callbacks */
 int read_fs_fat12(vfs_node_t *node, void *buffer, u32int size){
+        unsigned int offset, content, source;
+
+        offset  = (node->first_cluster - 2);
+        content = (0x4200/0x200) + offset;
+        source  = fat12 + content;
+
         printf("Read callback called.\n");
+        memcpy(buffer,source,size);
+        return 20;
+
 }
 
 int write_fs_fat12(vfs_node_t *node, void *buffer, u32int size){
@@ -212,6 +221,6 @@ void init_fat12(){
         fat12_initialize(fat12_rd);
 
         /* Show the tree directory */
-        show_tree(root_fs, 0);
+//        show_tree(root_fs, 0);
         //printf("[+] floppy end!\n");
 }
