@@ -51,5 +51,4 @@ typedef struct fs_bootloader
 
 unsigned short get_next_cluster(u16int cluster);
 fs_root_dir_t * get_fat12_rootdir(unsigned short each_rd);
-void show_tree(fs_root_dir_t *fat12_rd);
 void show_bootsector(fs_bootloader_t *fat12);

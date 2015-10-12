@@ -10,6 +10,19 @@ vfs_node_t *subdir_temp;
 u8int root_fs_lock;
 u16int index_inode;
 
+/* Nodes callbacks */
+int read_fs_fat12(vfs_node_t *node, void *buffer, u32int size){
+        printf("Read callback called.\n");
+}
+
+int write_fs_fat12(vfs_node_t *node, void *buffer, u32int size){
+        printf("Read callback called.\n");
+}
+
+int close_fs_fat12(vfs_node_t *node){
+        printf("Close callback called.\n");
+}
+
 /* Return the next cluster */
 unsigned short get_next_cluster(u16int cluster){
         u16int next_cluster, offset;
@@ -74,75 +87,22 @@ void fat12_filename_dos(fs_root_dir_t *fat12_rd, vfs_node_t *node){
 
 }
 
-void show_tree(){
-        u16int next_cluster;
-        vfs_node_t *node, *prev=0;  
-        vfs_node_t *subdir_node;
+void show_tree(vfs_node_t *node, int level){
+        int i;
 
-        subdir_node = subdir_temp;
-
-        printf("/\n");
-        while(1){
-                if(fat12_rd->file_name[0] == 0x00) break; /* is the last? */
+        while(node != 0){
+                for(i=0;i<level;i++) puts(" ");
                 
-                /* New node created */
-                node = kmalloc(sizeof(vfs_node_t));
-       
-                fat12_filename_dos(fat12_rd, node);
-                node->inode             = ++index_inode;
-                node->attr              = fat12_rd->file_attrib; 
-                node->size              = fat12_rd->file_size;
-                node->first_cluster     = fat12_rd->file_first_cluster; 
-                node->current_cluster   = fat12_rd->file_first_cluster;
-                node->offset            = 0;
-             
-                if(prev)
-                        prev->next      = node;
-                else{
-                        if(!root_fs_lock){ /* root file */
-                                root_fs = node;
-                                root_fs_lock = 1;
-                        }
+                if((node->attr == 0x10)) 
+                        printf("- %s/\n",node->filename, level); 
+                else
+                        printf("- %s\n",node->filename, level); 
 
-                        if(subdir_node) /* first node of subdir*/
-                                subdir_node->subdir = node;
-
-               }
-
-                prev    = node; 
-
-                printf("|-- %s", node->filename);
-                printf(" inode:%d",node->inode);
-                /*
-                printf(" (%s size:%d cluster:%d)",(fat12_rd->file_attrib == 0x20 ? "FILE" : "DIR "),
-                                fat12_rd->file_size, fat12_rd->file_first_cluster);
-
-                printf(" (Next cluster:");
-                next_cluster = get_next_cluster(fat12_rd->file_first_cluster);
-                while(next_cluster  > 0){
-                        printf(" %d",next_cluster);
-                        next_cluster = get_next_cluster(next_cluster);
-                }
-
-                printf(")");
-
-
-                */
-
-                printf("\n");
-                
                 /* Found a subdir */
-                if((node->attr == 0x10) && fat12_rd->file_name[0] != '.'){
-                        subdir_temp = node; /* mark the subdir */
-                        show_tree(get_fat12_rootdir(fat12_rd->file_first_cluster));
-                        subdir_temp = 0; /* no subdir anymore */
-                }
+                if((node->attr == 0x10) && node->filename[0] != '.')
+                        show_tree(node->subdir, ++level);
 
-                //if(fat12_rd->file_size <= 600)
-                //        show_content(fat12_rd);        
-
-                fat12_rd++;
-                //puts("\n");
+                node = node->next;
         }
 }
 
@@ -168,6 +128,10 @@ void fat12_initialize(fs_root_dir_t *fat12_rd){
                 node->first_cluster     = fat12_rd->file_first_cluster; 
                 node->current_cluster   = fat12_rd->file_first_cluster;
                 node->offset            = 0;
+                /* callbacks */
+                node->read              = &read_fs_fat12;
+                node->write             = &write_fs_fat12;
+                node->close             = &close_fs_fat12;
              
                 if(prev)/* is not the first one */
                         prev->next      = node;
@@ -217,18 +181,6 @@ void show_bootsector(fs_bootloader_t *fat12){
         printf("[+] Bootable: %s\n", (fat12->bootable_partition == 0xAA55 ? "Yes" : "No" ));
 }
 
-int read_fs_fat12(vfs_node_t *node, void *buffer, u32int size){
-        printf("Read callback called.\n");
-}
-
-int write_fs_fat12(vfs_node_t *node, void *buffer, u32int size){
-        printf("Read callback called.\n");
-}
-
-int close_fs_fat12(vfs_node_t *node){
-        printf("Close callback called.\n");
-}
-
 void init_fat12(){
 
         fs_root_dir_t   *fat12_rd;
@@ -259,5 +211,7 @@ void init_fat12(){
         /* Load files and dir to memory */
         fat12_initialize(fat12_rd);
 
+        /* Show the tree directory */
+        show_tree(root_fs, 0);
         //printf("[+] floppy end!\n");
 }
