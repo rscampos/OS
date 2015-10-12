@@ -3,6 +3,8 @@
 
 #include "common.h"
 #include "monitor.h"
+#include "vfs.h"
+
 int main()
 {
         int sum, mul, num1, num2,size;
@@ -15,6 +17,7 @@ int main()
         u32int addr;
         int i;
         u32int addr_k;
+        vfs_node_t * node;
         char *banner = "Welcome to my operation system!\n";
                
         //for(i=0;i<=8192;i++){ - error
@@ -29,6 +32,7 @@ int main()
 
         //printf("addr:0x%x\n",addr_k);
         //puts("done.\n");
- 
+        node = open_vfs("/tmp/dir1/dir2/TEMP.TXT");
+     
         return 1;
 }
