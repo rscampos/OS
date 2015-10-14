@@ -89,11 +89,11 @@ void init_gdt(){
         gdt_ptr.gdt_base        = (u32int) &gdt_table;
         gdt_ptr.limit           = sizeof(gdt_entry_t)*5 - 1;
 
-        gdt_set_gate(0,0,0,0,0);               // Null segment
-        gdt_set_gate(1,0,0x9A,0xFFFFFF,0xC);   // Kernel - code segment
-        gdt_set_gate(2,0,0x92,0xFFFFFF,0xC);   // Kernel - data segment
-        gdt_set_gate(3,0,0xFA,0xFFFFFF,0xC);   // User   - code segment
-        gdt_set_gate(4,0,0xF2,0xFFFFFF,0xC);   // User   - data segment
+        gdt_set_gate(0,0,0,0,0);                /* 0x00 - Null segment          */
+        gdt_set_gate(1,0,0x9A,0xFFFFFF,0xC);    /* 0x08 - Kernel - code segment */
+        gdt_set_gate(2,0,0x92,0xFFFFFF,0xC);    /* 0x10 - Kernel - data segment */
+        gdt_set_gate(3,0,0xFA,0xFFFFFF,0xC);    /* 0x18 - User   - code segment */
+        gdt_set_gate(4,0,0xF2,0xFFFFFF,0xC);    /* 0x20 - User   - data segment */
 
         gdt_install((u32int)&gdt_ptr);
 }

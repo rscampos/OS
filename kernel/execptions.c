@@ -21,7 +21,7 @@ void int3(registers_t regs){
 
 void double_fault(registers_t regs){
         printf("[Exceptions]: double fault:%d\n",regs.int_no);
-        printf("[Exceptions]: double fault:%d\n",regs.eip);
+        printf("[Exceptions]: double fault:0x%x\n",regs.eip);
         asm("cli");
         asm("hlt");
 }

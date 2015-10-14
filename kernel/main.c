@@ -34,10 +34,14 @@ int main()
         //printf("addr:0x%x\n",addr_k);
         //puts("done.\n");
         //
-        pathname = "/ROOT/TEMP.TXT";
+        pathname = "/ROOT/TEMP/DIR1/FILE1.TXT";
         printf("Reading %s\n",pathname);
+        
         node = open_vfs(pathname);
         read_vfs(node,ptr,512);
+        write_vfs(node,ptr,512);
+        close_vfs(node);
+
         printf("Conteudo:%s\n",ptr);
         return 1;
 }
