@@ -9,9 +9,13 @@ My personal project - Operation System development.
 Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
 - [x] Problema no mecanismo de paginação. **Corrigido:** *21/09/15: A20 estava desabilitado - A20 foi habilitado.* Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
 - [x] Arrumar parte floopy - carregar tudo primeiro e depois acessar. **Corrigido** *30/09/15: problema conversão lba->chs* Commit: [ae3bcbc3fc6ebbdb05fe4d5c0617d5f3f6249f70].
-- [ ] Suporte para multiplos cluster.
-   - [x] Obtém próximo cluster. **Feito:** 05/08/2014. Commit: [b45cae3a54b92f44fdc8227372a88fc8a5f3fc92]. 
 - [ ] Problema ao alocar 4MB, ao tentar alocar PT#193, ocorre um problema na alocação uma vez que não tem mais páginas disponíveis. 
 - [ ] Fazer scroll. 
-- [ ] Fazer vários testes com o filesystem.
+- [] Filesystem:
+   - [x] Obtém próximo cluster. **Feito:** 05/08/2014. Commit: [b45cae3a54b92f44fdc8227372a88fc8a5f3fc92]. 
+   - [ ] Suporte para multiplos cluster.
    - [ ] Não subir tudo para a memória. Subir apenas cabeçalhos e não conteúdos.
+   - [ ] READ: ler vários sectores ao mesmo tempo, quando passado >512 Bytes.
+   - [ ] WRITE: Implementar.
+   - [ ] OPEN/CLOSE - verificar o esquema utilizado para saber se o arquivo esta open/close, se foi modificado para ser salvo.
+- [] User-space/Multitask.
