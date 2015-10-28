@@ -25,6 +25,7 @@ int setuphal(multiboot_info_t* bootinfo)
         //puts("[HAL] Installing IRQs...\n"); 
         //init_timer(20000000); 
         asm volatile("sti");
+
         //init_keyboard();
         
 
@@ -32,6 +33,7 @@ int setuphal(multiboot_info_t* bootinfo)
         /* Execptions inicialization */
         //puts("[HAL] Installing Execptions...");
         init_exceptions();
+        //asm volatile("int3");
         //puts("done.\n");
         
         /* Turn on the interrupts - Let's start the kernel */
@@ -45,6 +47,16 @@ int setuphal(multiboot_info_t* bootinfo)
         init_fdctrl();
         
         init_fat12();
+        u32int * alloc;
+        alloc = kmalloc(200);
+        //printf("teste:0x%x\n",alloc);       
+       
+        //asm volatile("movl %cr0, %eax");
+        
+        /* Ring3 test */
+        //ring3_test();
 
+        /* PCI Routines */
+        init_pci(); 
         return 1;
 }
