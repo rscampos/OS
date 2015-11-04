@@ -4,6 +4,7 @@
 [EXTERN irq_handler]
 [GLOBAL idt_install]
 [GLOBAL gdt_install]
+[GLOBAL tss_install]
 
 idt_install:
         pop ebx
@@ -24,9 +25,14 @@ gdt_install:
         mov     ss, ax
         push    ebx
         jmp     0x8:.flush
-
 .flush:
         ret
+
+tss_install:
+        mov ax, 0x28   ; index to our TSS struct, 0x28 (5th selector)
+        ltr ax         ; 0x2b sets the RPL to 3.
+        ret
+
 
 %macro ISR_NOERRCODE 1  ; define a macro, taking one parameter
   [GLOBAL isr%1]        ; %1 accesses the first parameter.

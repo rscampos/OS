@@ -40,7 +40,7 @@ u32int kmalloc_a(u32int size, int align){
                  * The number of used frames and availables.
                  */
                 page_temp = get_page(temp,1,kernel_directory);
-                pmm_alloc_frame(page_temp, PAGE_KERNEL, PAGE_READ);
+                pmm_alloc_frame(page_temp, PAGE_USER, PAGE_WRITE);
                 
                 /* 
                 printf("[+] kmalloc called:\n");
@@ -61,7 +61,7 @@ u32int kmalloc(u32int size){
 
 void kmalloc_init(){
         page_t * page;
-        pmm_alloc_frame(get_page(kheap_init_addr,1,kernel_directory), PAGE_KERNEL, PAGE_READ);
+        pmm_alloc_frame(get_page(kheap_init_addr,1,kernel_directory), PAGE_USER, PAGE_READ);
         page = get_page(kheap_init_addr,1,kernel_directory);
         paging_enable = 1;
 }

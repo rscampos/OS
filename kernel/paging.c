@@ -28,11 +28,11 @@ page_t * get_page(u32int address,int make,page_directory_t * page_dir){
                 if(paging_enable==1){ /* temp is a page - need to get the phy addr.*/
                         temp_page = get_page(temp,PT_CREATE,kernel_directory);
                         page_dir->tables[index_page/1024]               = (page_table_t*)temp;
-                        page_dir->tablesPhysical[index_page/1024]       = (page_table_t*)((temp_page->frame_address << 12) | 0x1);
+                        page_dir->tablesPhysical[index_page/1024]       = (page_table_t*)((temp_page->frame_address << 12) | 0x5);
                 
                 }else{ /* temp is just a physical address*/
                         page_dir->tables[index_page/1024]               = (page_table_t*)temp;
-                        page_dir->tablesPhysical[index_page/1024]       = temp | 0x1;
+                        page_dir->tablesPhysical[index_page/1024]       = temp | 0x5;
                 }
                 memset(temp,0,sizeof(page_table_t)); /* this line is going to trigger the #PF */
         }else{
@@ -152,5 +152,5 @@ void page_fault(registers_t regs){
                         "movl %cr2, %eax;"
                         );
         temp_page = get_page(fault_linear_address,PT_CREATE,kernel_directory);
-        pmm_alloc_frame(temp_page, PAGE_KERNEL, PAGE_READ);
+        pmm_alloc_frame(temp_page, PAGE_USER, PAGE_WRITE);
 }

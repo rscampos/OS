@@ -2,10 +2,11 @@
 #include "descriptor_table.h"
 #include "isr.h"
 
-gdt_entry_t     gdt_table[5];
+gdt_entry_t     gdt_table[6];
 gdt_ptr_t       gdt_ptr;
 idt_entry_t     idt_table[256];
 idt_ptr_t       idt_ptr;
+tss_entry_t     tss_entry;
 
 void idt_set_gate(int num, u32int handler){
 
@@ -15,6 +16,7 @@ void idt_set_gate(int num, u32int handler){
         idt_table[num].segment_selector = 0x8;
         idt_table[num].reserved         = 0x0;
 
+        /* P|DPL|0 1110 - interrupt gate */
         idt_table[num].flags            = 0x8E;
 }
 
@@ -25,7 +27,8 @@ void gdt_set_gate(int num, u32int base, u8int access, u32int limit, u8int granul
         gdt_table[num].base_high     = (base >> 24);
 
         gdt_table[num].limit_low     = limit & 0xFFFF;
-        gdt_table[num].granularity   = (granularity << 4) + ((limit & 0xF0000) >> 16);
+        gdt_table[num].granularity   = (limit >> 16) & 0x0F;
+        gdt_table[num].granularity   |= granularity & 0xF0;
 
         gdt_table[num].access        = access;
 }
@@ -44,11 +47,13 @@ void init_gates(){
         idt_set_gate(8,(u32int)isr8);
         /*
         idt_set_gate(9,(u32int)isr9);
+        */
         idt_set_gate(10,(u32int)isr10);
+        /*
         idt_set_gate(11,(u32int)isr11);
         idt_set_gate(12,(u32int)isr12);
-        idt_set_gate(13,(u32int)isr13);
         */
+        idt_set_gate(13,(u32int)isr13);
         idt_set_gate(14,(u32int)isr14);
         /*
         idt_set_gate(15,(u32int)isr15);
@@ -87,15 +92,44 @@ void init_idt(){
 void init_gdt(){
 
         gdt_ptr.gdt_base        = (u32int) &gdt_table;
-        gdt_ptr.limit           = sizeof(gdt_entry_t)*5 - 1;
+        gdt_ptr.limit           = sizeof(gdt_entry_t)*6 - 1;
 
         gdt_set_gate(0,0,0,0,0);                /* 0x00 - Null segment          */
-        gdt_set_gate(1,0,0x9A,0xFFFFFF,0xC);    /* 0x08 - Kernel - code segment */
-        gdt_set_gate(2,0,0x92,0xFFFFFF,0xC);    /* 0x10 - Kernel - data segment */
-        gdt_set_gate(3,0,0xFA,0xFFFFFF,0xC);    /* 0x18 - User   - code segment */
-        gdt_set_gate(4,0,0xF2,0xFFFFFF,0xC);    /* 0x20 - User   - data segment */
+        gdt_set_gate(1,0,0x9A,0xFFFFFF,0xCF);    /* 0x08 - Kernel - code segment */
+        gdt_set_gate(2,0,0x92,0xFFFFFF,0xCF);    /* 0x10 - Kernel - data segment */
+        gdt_set_gate(3,0,0xFA,0xFFFFFF,0xCF);    /* 0x18 - User   - code segment */
+        gdt_set_gate(4,0,0xF2,0xFFFFFF,0xCF);    /* 0x20 - User   - data segment */
+        write_tss(5, 0x10, 0x9000);             /* 0x28 - TSS                   */
 
         gdt_install((u32int)&gdt_ptr);
+        tss_install();
+}
+
+void write_tss(u32int num, u16int ss0, u32int esp0){
+        u32int base, limit;
+        
+        base    = &tss_entry;
+        //limit   = base + sizeof(tss_entry);
+        limit   = sizeof(tss_entry_t) - 1;
+
+        gdt_set_gate(num, base, 0x89, limit, 0x0); /* sets for ring0 */
+
+        memset(&tss_entry, 0x0, sizeof(tss_entry));
+        
+        tss_entry.ss0   = ss0;  /* kernel stack segment */
+        tss_entry.esp0  = esp0; /* kernel stack pointer */
+
+        /* We are setting all segments cs, ss, ds, es, fs and gs. 
+         * All segment are with RPL (Requested Privilege Level) to 3,
+         * which means that TSS can be used to switch from ring3 to ring0.
+         */
+        tss_entry.cs    = 0x08; 
+        tss_entry.ss    = 0x10; 
+        tss_entry.ds    = 0x10; 
+        tss_entry.es    = 0x10; 
+        tss_entry.fs    = 0x10; 
+        tss_entry.gs    = 0x10; 
+        
 }
 
 void init_descriptor_tables(){

@@ -80,7 +80,8 @@ void pmm_init_page(){
 
         //printf("Phy before: 0x%x\n", phy_addr);
         while(i < phy_addr){
-                pmm_alloc_frame(get_page(i,1,kernel_directory), PAGE_KERNEL, PAGE_WRITE);
+                //pmm_alloc_frame(get_page(i,1,kernel_directory), PAGE_KERNEL, PAGE_WRITE);
+                pmm_alloc_frame(get_page(i,1,kernel_directory), PAGE_USER, PAGE_WRITE);
                 i+=PAGE_SIZE;
         }
 

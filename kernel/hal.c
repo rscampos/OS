@@ -54,9 +54,9 @@ int setuphal(multiboot_info_t* bootinfo)
         //asm volatile("movl %cr0, %eax");
         
         /* Ring3 test */
-        //ring3_test();
+        ring3_test();
 
         /* PCI Routines */
-        init_pci(); 
+        //init_pci(); 
         return 1;
 }
