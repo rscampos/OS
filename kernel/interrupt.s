@@ -29,7 +29,7 @@ gdt_install:
         ret
 
 tss_install:
-        mov ax, 0x28   ; index to our TSS struct, 0x28 (5th selector)
+        mov ax, 0x2B   ; index to our TSS struct, 0x28 (5th selector)
         ltr ax         ; 0x2b sets the RPL to 3.
         ret
 
@@ -39,7 +39,7 @@ tss_install:
   isr%1:
     cli
     push byte 0
-    push byte %1
+    push %1
     jmp isr_common_stub
 %endmacro
 
@@ -140,6 +140,7 @@ ISR_NOERRCODE 28
 ISR_NOERRCODE 29
 ISR_NOERRCODE 30
 ISR_NOERRCODE 31
+ISR_NOERRCODE 128
 IRQ 0, 32
 IRQ 1, 33
 IRQ 2, 34
@@ -156,3 +157,4 @@ IRQ 12, 44
 IRQ 13, 45
 IRQ 14, 46
 IRQ 15, 47
+

@@ -46,7 +46,7 @@ int setuphal(multiboot_info_t* bootinfo)
         /* Setup the floppy driver */
         init_fdctrl();
         
-        init_fat12();
+        //init_fat12();
         u32int * alloc;
         alloc = kmalloc(200);
         //printf("teste:0x%x\n",alloc);       

@@ -176,6 +176,15 @@ void machine_check(registers_t regs){
 }
 */
 
+
+void int80(registers_t regs){
+	printf("Syscall fired!\n");
+	printf("FUNC (EAX): 0x%x\n",regs.eax);
+	printf("(EBX): 0x%x\n",regs.ebx);
+	printf("(ECX): 0x%x\n",regs.ecx);
+	printf("(EDX): 0x%x\n",regs.edx);
+}
+
 void init_exceptions(){
         register_interrupt_handler(ISR0,&divide_error);
         register_interrupt_handler(ISR1,&debug);
@@ -196,5 +205,6 @@ void init_exceptions(){
         //register_interrupt_handler(ISR16,&coprocessor_error);
         //register_interrupt_handler(ISR17,&alignement_check);
         //register_interrupt_handler(ISR18,&machine_check);
+        register_interrupt_handler(0x80,&int80);
 }
 
