@@ -131,7 +131,7 @@ Stage3:
 	mov	esi, KERNELSTART
 	mov	edi, IMAGEPMODE-0x1000          ; because we are using ELF, we
 	cld                                     ; load 1M - 0x1000 for jump to
-        mov     ax, 0x10
+        mov     ax, 0x10                        ; 'rep movsd' uses es and ds
         mov     es, ax
         mov     ds, ax
 	rep	movsd                           ; 1MB. The first byte is at 1M
