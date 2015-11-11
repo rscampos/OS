@@ -12,8 +12,9 @@ extern page_directory_t *kernel_directory;
  * Param 2) Create a PT if there isn't. If the requested page were in a PT
  * that was already created, so, there isn't no need to create a new PT.
  * Param 3) Point to the PD.
+ * Return: a page (an address page_dir->tables[?]->pages[?] ).
  */
-page_t * get_page(u32int address,int make,page_directory_t * page_dir){
+page_t * get_page(u32int address, int make, page_directory_t * page_dir){
         u32int idx_frame;
         u32int index_page = address / 0x1000;
         page_table_t * temp_table;
