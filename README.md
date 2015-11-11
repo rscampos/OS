@@ -20,7 +20,7 @@ Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
    - [ ] Suporte para multiplos cluster.
    - [ ] Não subir tudo para a memória. Subir apenas cabeçalhos e não conteúdos.
 - [ ] User-space/Multitask:
-   - [x] 1) To ring3 e 'soft interrupt'. Feito: 04/11/15.
+   - [x] 1) To ring3 e 'soft interrupt'. **Feito**: 04/11/15.
    - [ ] 2) Por código acima de 0x08040000 (jogar usercode pra baixo).
    - [ ] 3) Tentar clonar a PD (para que o kernel sempre fique no mesmo lugar).
    - [ ] 4) Obter os bytes de um executável e jogá-lo na memória.
