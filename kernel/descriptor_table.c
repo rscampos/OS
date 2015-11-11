@@ -33,7 +33,7 @@ void gdt_set_gate(int num, u32int base, u8int access, u32int limit, u8int granul
         gdt_table[num].access        = access;
 }
 void init_gates(){
- 
+
         idt_set_gate(0,(u32int)isr0,0x8,0x8E);
         idt_set_gate(1,(u32int)isr1,0x8,0x8E);
         idt_set_gate(3,(u32int)isr3,0x8,0x8E);
@@ -51,7 +51,7 @@ void init_idt(){
 
         idt_ptr.idt_base        = (u32int) &idt_table;
         idt_ptr.limit           = sizeof(idt_entry_t)*256 - 1;
-        
+
         /* Remap the irq table */
         outb(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);      /* PIC inicialization - Master */
         outb(PIC2_COMMAND, ICW1_INIT | ICW1_ICW4);      /* PIC inicialization - Slave */
@@ -63,7 +63,7 @@ void init_idt(){
         outb(PIC2_DATA, ICW4_8086);                     /* ICW4 - */
         outb(0x21, 0x0);                                /* ICW3 - */
         outb(0xA1, 0x0);                                /* ICW3 - */
-        
+
         init_gates();
 
         idt_install((u32int)&idt_ptr);
@@ -87,14 +87,14 @@ void init_gdt(){
 
 void write_tss(u32int num, u16int ss0, u32int esp0){
         u32int base, limit;
-        
+
         base    = &tss_entry;
         limit   = sizeof(tss_entry_t) - 1;
 
         gdt_set_gate(num, base, 0xE9, limit, 0x0);
 
         memset(&tss_entry, 0x0, sizeof(tss_entry));
-        
+
         tss_entry.ss0   = ss0;  /* kernel stack segment */
         tss_entry.esp0  = esp0; /* kernel stack pointer */
 }

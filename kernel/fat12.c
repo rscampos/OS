@@ -84,15 +84,15 @@ void fat12_filename_dos(fs_root_dir_t *fat12_rd, vfs_node_t *node){
                 else
                         break;
         }
-                      
+
         memcpy(node->filename,fat12_rd->file_name,index);
-        
+
         if(fat12_rd->file_ext[0] != 0x20){
                 memset(&node->filename[index],'.',1);
                 memcpy(&node->filename[index+1],fat12_rd->file_ext,3);
                 memset(&node->filename[index+4],0x0,13-(index+4));
         }else{
-                memset(&node->filename[index+4],0x0,13-(index-1)); 
+                memset(&node->filename[index+4],0x0,13-(index-1));
         }
 
 }
@@ -102,11 +102,11 @@ void show_tree(vfs_node_t *node, int level){
 
         while(node != 0){
                 for(i=0;i<level;i++) puts(" ");
-                
-                if((node->attr == 0x10)) 
-                        printf("- %s/\n",node->filename, level); 
+
+                if((node->attr == 0x10))
+                        printf("- %s/\n",node->filename, level);
                 else
-                        printf("- %s\n",node->filename, level); 
+                        printf("- %s\n",node->filename, level);
 
                 /* Found a subdir */
                 if((node->attr == 0x10) && node->filename[0] != '.')
@@ -119,30 +119,30 @@ void show_tree(vfs_node_t *node, int level){
 
 void fat12_initialize(fs_root_dir_t *fat12_rd){
         u16int next_cluster;
-        vfs_node_t *node, *prev=0;  
+        vfs_node_t *node, *prev=0;
         vfs_node_t *subdir_node;
-        
-        /* get the prev subdir reference */ 
+
+        /* get the prev subdir reference */
         subdir_node = subdir_temp;
 
         while(1){
                 if(fat12_rd->file_name[0] == 0x00) break; /* is the last? */
-                
+
                 /* Create a new node */
                 node = kmalloc(sizeof(vfs_node_t));
-       
+
                 fat12_filename_dos(fat12_rd, node);
                 node->inode             = ++index_inode;
-                node->attr              = fat12_rd->file_attrib; 
+                node->attr              = fat12_rd->file_attrib;
                 node->size              = fat12_rd->file_size;
-                node->first_cluster     = fat12_rd->file_first_cluster; 
+                node->first_cluster     = fat12_rd->file_first_cluster;
                 node->current_cluster   = fat12_rd->file_first_cluster;
                 node->offset            = 0;
                 /* callbacks */
                 node->read              = &read_fs_fat12;
                 node->write             = &write_fs_fat12;
                 node->close             = &close_fs_fat12;
-             
+
                 if(prev)/* is not the first one */
                         prev->next      = node;
                 else{   /* when the node is the first one (root or subdir)*/
@@ -155,7 +155,7 @@ void fat12_initialize(fs_root_dir_t *fat12_rd){
                                 subdir_node->subdir = node;
                }
 
-                prev = node; 
+                prev = node;
 
                 /* Found a subdir */
                 if((node->attr == 0x10) && fat12_rd->file_name[0] != '.'){
@@ -175,7 +175,7 @@ void show_bootsector(fs_bootloader_t *fat12){
                         fat12->bpb_total_sectors * fat12->bpb_bytes_sector,
                         (fat12->bpb_total_sectors * fat12->bpb_bytes_sector)/1024);
 
-        printf("  [-] Total of sectors:%d\n", fat12->bpb_total_sectors); 
+        printf("  [-] Total of sectors:%d\n", fat12->bpb_total_sectors);
         printf("  [-] Num of FAT's:%d | Sectors per FAT:%d | Sectors per Track:%d\n",
                         fat12->bpb_fatnumbers, fat12->bpb_sectors_fat, fat12->bpb_sectors_track);
 

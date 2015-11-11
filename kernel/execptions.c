@@ -6,7 +6,7 @@
 void divide_error(registers_t regs){
         puts("[Exceptions]: divide_error\n");
         printf("[Exceptions]: EIP=>0x%x\n",regs.eip);
-        
+
         asm("cli");
         asm("hlt");
 }
@@ -178,11 +178,13 @@ void machine_check(registers_t regs){
 
 
 void int80(registers_t regs){
-	printf("Syscall fired!\n");
-	printf("FUNC (EAX): 0x%x\n",regs.eax);
-	printf("(EBX): 0x%x\n",regs.ebx);
-	printf("(ECX): 0x%x\n",regs.ecx);
-	printf("(EDX): 0x%x\n",regs.edx);
+        printf("Syscall fired!\n");
+        printf("FUNC (EAX): 0x%x\n",regs.eax);
+        printf("(EBX): 0x%x\n",regs.ebx);
+        printf("(ECX): 0x%x\n",regs.ecx);
+        printf("(EDX): 0x%x\n",regs.edx);
+        asm("cli");
+        asm("hlt");
 }
 
 void init_exceptions(){

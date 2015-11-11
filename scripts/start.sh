@@ -35,12 +35,12 @@ then
 else
         echo "This script is used to start the operation system using qemu.."
         echo "Options:"
-        echo "\t" "-c CLI (curses)"
-        echo "\t" "-cm CLI - Monitor (4444/TCP)"
-        echo "\t" "-g GUI (graphical)"
-        echo "\t" "-d debugging mode (GDB Server at 1234/TCP)"
-        echo "\t" "-dm debugging mode (GDB Server at 1234/TCP) - Monitor (4444/TCP)"
-        echo "\t" "-a debugging mode (Attach GDB at 1234/TCP)"
-        echo "\t" "-as debugging mode /w symbols (Attach GDB at 1234/TCP)"
+        echo -e "\t" "-c CLI (curses)"
+        echo -e "\t" "-cm CLI - Monitor (4444/TCP)"
+        echo -e "\t" "-g GUI (graphical)"
+        echo -e "\t" "-d debugging mode (GDB Server at 1234/TCP)"
+        echo -e "\t" "-dm debugging mode (GDB Server at 1234/TCP) - Monitor (4444/TCP)"
+        echo -e "\t" "-a debugging mode (Attach GDB at 1234/TCP)"
+        echo -e "\t" "-as debugging mode /w symbols (Attach GDB at 1234/TCP)"
 
 fi
