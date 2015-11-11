@@ -57,26 +57,19 @@ void pmm_memory_map(multiboot_info_t* bootinfo){
 }
 
 void pmm_init_page(){
-        page_table_t *pointer_page_table;
-        page_t *page;
-        page_t *page_tmp;
-        u32int page_va;
-        u32int idx_frame;
-        int i = 0;
+        u32int i = 0x0;
 
-        /* Alloc memory for page_directory */
-        kernel_directory = (page_directory_t*) kmalloc_a(sizeof(page_directory_t),1);
-
-        memset(kernel_directory,0,sizeof(page_directory_t));
+        /* Alloc and clean memory for PD (Page Directory) */
+        kernel_directory = (page_directory_t*) kmalloc_a(sizeof(page_directory_t), 1);
+        memset(kernel_directory, 0, sizeof(page_directory_t));
 
         /* All the PTs are reserved after the PD */
-
         while(i < phy_addr){
-                pmm_alloc_frame(get_page(i,1,kernel_directory), PAGE_USER, PAGE_WRITE);
+                pmm_alloc_frame(get_page(i, 1, kernel_directory), PAGE_USER, PAGE_WRITE);
                 i+=PAGE_SIZE;
         }
 
-        register_interrupt_handler(ISR14,&page_fault);
+        register_interrupt_handler(ISR14, &page_fault);
         load_page_dir(kernel_directory);
 }
 

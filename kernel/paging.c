@@ -7,7 +7,7 @@ u32int number_frames    = 0;    /* number of frames available. */
 int paging_enable       = 0;
 extern page_directory_t *kernel_directory;
 
-/* 
+/*
  * Param 1) This is the linear address.
  * Param 2) Create a PT if there isn't. If the requested page were in a PT
  * that was already created, so, there isn't no need to create a new PT.
@@ -18,18 +18,18 @@ page_t * get_page(u32int address,int make,page_directory_t * page_dir){
         u32int index_page = address / 0x1000;
         page_table_t * temp_table;
         if(page_dir->tables[index_page/1024]){  /* check if there is the PT */
-                /* if there is the PT, the position for the page will be returned */ 
+                /* if there is the PT, the position for the page will be returned */
         }else if(make){ /* create a new PT and assigned to the PD */
                 u32int temp;
                 page_table_t * temp_table;
                 page_t * temp_page;
                 temp = kmalloc_a(sizeof(page_table_t),1);
-                //printf("PT#%d created at:0x%x\n",index_page/1024, temp);        
+                //printf("PT#%d created at:0x%x\n",index_page/1024, temp);
                 if(paging_enable==1){ /* temp is a page - need to get the phy addr.*/
                         temp_page = get_page(temp,PT_CREATE,kernel_directory);
                         page_dir->tables[index_page/1024]               = (page_table_t*)temp;
                         page_dir->tablesPhysical[index_page/1024]       = (page_table_t*)((temp_page->frame_address << 12) | 0x5);
-                
+
                 }else{ /* temp is just a physical address*/
                         page_dir->tables[index_page/1024]               = (page_table_t*)temp;
                         page_dir->tablesPhysical[index_page/1024]       = temp | 0x5;
@@ -38,16 +38,16 @@ page_t * get_page(u32int address,int make,page_directory_t * page_dir){
         }else{
                 return 0;
         }
-               
+
         return &page_dir->tables[index_page/1024]->pages[index_page%1024];
 }
 
-/* Param 1) The page. 
+/* Param 1) The page.
  * Param 2) The virtual address of the page.
  */
 void get_page_flgs(page_t * page){
         /* if the page isn't present, all other fields
-         * are ignored. */ 
+         * are ignored. */
         if (page->present){
                 puts("present ");
         }else{
@@ -61,14 +61,12 @@ void get_page_flgs(page_t * page){
 }
 
 void show_page(page_t * page, u32int page_va, page_directory_t * page_dir){
-        int pde_idx     = (page_va/4096)/1024;
-        //u32int pde_addr = page_dir + (pde_idx*4);
-        u32int pde_addr = (u32int)page_dir + pde_idx*4;
 
+        int pde_idx     = (page_va/4096)/1024;
+        u32int pde_addr = (u32int)page_dir + pde_idx*4;
         u32int pt_addr  = page_dir->tables[pde_idx];
         int pte_idx     = (page_va/4096)%1024;
         u32int pte_addr = pt_addr + pte_idx*4;
-
 
         printf("[+] Page info: (0x%x)\n", page_va);
         printf(" [+] Page Dir (PD)  : 0x%x\n", page_dir);
@@ -76,17 +74,17 @@ void show_page(page_t * page, u32int page_va, page_directory_t * page_dir){
         printf(" [+] Page Table (PT#%d): Addr:0x%x\n", pde_idx,pt_addr);
         printf("  [-] PT Entry (PTE): idx:%d Addr:0x%x\n", pte_idx, pte_addr);
         printf(" [+] Page struct:\n");
-       
+
         /* Show the page flags*/
         printf("  [-] Flags: ");
         get_page_flgs(page);
         printf("\n");
-        
+
         printf("  [-] Frame Address:0x%x\n",page->frame_address * 4096);
 }
 
 void enable_paging(){
-        //printf("Enabe paging...");
+
         asm volatile(   "movl %cr0, %eax;"
                         "orl $0x80000000,%eax;"
                         "movl %eax, %cr0;"
@@ -97,16 +95,15 @@ void enable_paging(){
 
 void load_page_dir(page_directory_t *dir){
 
-        u32int fault_linear_address;
-        asm(    "movl %0, %%cr3;"::"r" (&dir->tablesPhysical));
-        
+        asm("movl %0, %%cr3;"::"r" (&dir->tablesPhysical));
+
         enable_paging();
 }
 
 /* Show the error caused in page_fault */
 void err_page_fault(u32int error){
-        int present     = error & 0x1;  /* 0 - not present; 1 - present */ 
-        int rw          = error & 0x2;  /* 0 - was read; 1 - was write */ 
+        int present     = error & 0x1;  /* 0 - not present; 1 - present */
+        int rw          = error & 0x2;  /* 0 - was read; 1 - was write */
         int us          = error & 0x4;  /* 0 - was in ring 0; 1 - was in ring 3 */
         int reserved    = error & 0x8;  /* 0 - not overwritten CPU-reserved bits; 1 - overwritten */
         int fetch       = error & 0x10; /* 0 - not caused by an instruction fetch; 1 - caused */
@@ -114,7 +111,6 @@ void err_page_fault(u32int error){
                 puts("present ");
         }else{
                 puts("'not present' ");
-                //return; 
         }
         if (rw)
                 puts("'on write' ");
@@ -128,7 +124,7 @@ void err_page_fault(u32int error){
 
         if (reserved)
                 puts("Overwrite reserved ");
-        
+
         if (fetch)
                 puts("Instruction fetch ");
 
