@@ -19,6 +19,7 @@ Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
    - [ ] OPEN/CLOSE - verificar o esquema utilizado para saber se o arquivo esta open/close, se foi modificado para ser salvo.
    - [ ] Suporte para multiplos cluster.
    - [ ] Não subir tudo para a memória. Subir apenas cabeçalhos e não conteúdos.
+   - [ ] show_tree esta com problema na listagem de uma diretório que esta entre dois arquivos.
 - [ ] User-space/Multitask:
    - [x] 1) To ring3 e 'soft interrupt'. **Feito**: 04/11/15.
    - [ ] 2) Por código acima de 0x08040000 (jogar usercode pra baixo).
