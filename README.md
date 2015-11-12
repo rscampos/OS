@@ -22,7 +22,7 @@ Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
    - [ ] show_tree esta com problema na listagem de uma diretório que esta entre dois arquivos.
 - [ ] User-space/Multitask:
    - [x] 1) To ring3 e 'soft interrupt'. **Feito**: 04/11/15.
-   - [ ] 2) Por código acima de 0x08040000 (jogar usercode pra baixo).
+   - [x] 2) Por código acima de 0x0804A000. **Feito**: 12/11/15.
    - [ ] 3) Tentar clonar a PD (para que o kernel sempre fique no mesmo lugar).
    - [ ] 4) Obter os bytes de um executável e jogá-lo na memória.
    - [ ] 5) Criar uma BCP com info de CR3.

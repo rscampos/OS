@@ -1,5 +1,5 @@
 // main.c -- Defines the C-code kernel entry point, calls initialisation routines.
-// Made for JamesM's tutorials 
+// Made for JamesM's tutorials
 
 #include "common.h"
 #include "monitor.h"
@@ -12,7 +12,7 @@ int main()
         num2=60;
         char interger[11];
         char buffer[50];
-        u32int *ptr;
+        u8int *ptr;
         u32int *do_page_fault;
         u32int addr;
         int i;
@@ -34,16 +34,26 @@ int main()
         //printf("addr:0x%x\n",addr_k);
         //puts("done.\n");
         //
-        /*
-        pathname = "/ROOT/TEMP/DIR1/FILE1.TXT";
-        printf("Reading %s\n",pathname);
-        
+
+        pathname = "/PROGRAMS/RING3";
+//        printf("Reading %s\n",pathname);
+
         node = open_vfs(pathname);
-        read_vfs(node,ptr,512);
-        write_vfs(node,ptr,512);
+        read_vfs(node, ptr, 512);
+        //write_vfs(node, ptr, 512);
+
+        /* Show the file content */
+        /*
+        printf("Content: ");
+        for(int i=0; i < node->size; i++)
+                printf("0x%x ",ptr[i]);
+        printf("\n");
+        */
+        memcpy(0x0804A000, ptr, node->size);
         close_vfs(node);
 
-        printf("Conteudo:%s\n",ptr);
-        */
+        /* call ring3 */
+        ring3_test();
+
         return 1;
 }

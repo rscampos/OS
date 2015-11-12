@@ -183,6 +183,10 @@ void int80(registers_t regs){
         printf("(EBX): 0x%x\n",regs.ebx);
         printf("(ECX): 0x%x\n",regs.ecx);
         printf("(EDX): 0x%x\n",regs.edx);
+
+        if(regs.eax == 4)
+                printf("Ring3:%s\n", regs.ecx);
+
         asm("cli");
         asm("hlt");
 }

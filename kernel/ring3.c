@@ -21,7 +21,7 @@ void ring3_test(){
                         or $0x200, %eax; \
                         pushl %eax; \
                         pushl $0x1b; \
-                        push $1f; \
+                        push $0x0804A000; \
                         iret; \
                         1: \
                         mov $0x31, %eax; \

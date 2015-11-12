@@ -59,7 +59,7 @@ void pmm_memory_map(multiboot_info_t* bootinfo){
 void pmm_init_page(){
         u32int virt_addr = 0x0;
         u32int address;
-        page_t temp;
+        page_t * temp;
 
         /* Alloc and clean memory for PD (Page Directory) */
         kernel_directory = (page_directory_t*) kmalloc_a(sizeof(page_directory_t), 1);
@@ -78,7 +78,9 @@ void pmm_init_page(){
         virt_addr = 0x0804A000;
         temp = get_page(virt_addr, 1, kernel_directory);
         pmm_alloc_frame(temp, PAGE_USER, PAGE_WRITE);
-        printf("Address:&0x%x[%x]\n", &address, address);
+        memset(virt_addr, 0x90, 20);
+        printf("Address:&0x%x[%x]\n", &temp, temp);
+        printf("Frame addr.:[%x]\n", temp->frame_address);
 }
 
 void pmm_init_bitmap(){

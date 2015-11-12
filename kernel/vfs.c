@@ -31,7 +31,7 @@ vfs_node_t * open_vfs(char *pathname){
         temp = root_fs;
         int i,s_path;
         s_path = strlen(pathname) + 2;
-        
+
         for(i=0;i<s_path;i++){
                 if(pathname[i]=='/' || pathname[i]=='\0'){
                         pathname[i]=0x00;

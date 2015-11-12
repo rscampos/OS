@@ -222,6 +222,6 @@ void init_fat12(){
         fat12_initialize(fat12_rd);
 
         /* Show the tree directory */
-//        show_tree(root_fs, 0);
+        //show_tree(root_fs, 0);
         //printf("[+] floppy end!\n");
 }

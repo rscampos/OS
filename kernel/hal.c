@@ -46,8 +46,8 @@ int setuphal(multiboot_info_t* bootinfo)
         /* Setup the floppy driver */
         init_fdctrl();
 
-        /* Ring3 test */
-        ring3_test();
+        /* Init fat12 */
+        init_fat12();
 
         /* PCI Routines */
         //init_pci();
