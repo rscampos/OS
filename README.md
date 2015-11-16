@@ -24,7 +24,7 @@ Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
    - [x] 1) To ring3 e 'soft interrupt'. **Feito**: 04/11/15.
    - [x] 2) Por código acima de 0x0804A000. **Feito**: 12/11/15.
    - [x] 3) Obter os bytes de um executável e jogá-lo na memória. **Feito**: 12/11/15.
-   - [ ] 4) Tentar clonar a PD (para que o kernel sempre fique no mesmo lugar).
+   - [x] 4) Tentar clonar a PD (para que o kernel sempre fique no mesmo lugar). **Feito**:17/11/15. Commit: [45f3c209dfeb8d844bcd299cc75613c90f5cb4ef].
    - [ ] 5) Criar uma BCP com info de CR3.
    - [ ] 6) Fazer dispatcher de int 0x08040000.
    - [ ] 7) Arrumar o PIT e fazer o escalonador.
