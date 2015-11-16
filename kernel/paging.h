@@ -19,10 +19,21 @@ typedef struct page_table{
         page_t pages[1024];
 }page_table_t;
 
-/* PD - Page Directory; 1024 PDE - Entrys */
+/* PD - Page Directory; 1024 PDE - Entrys 
+ * Each PDE must have some flags, for example: 
+ * bit 0 enabled (present - must be 1 to reference a page table).
+ * This kind of information is used by the CPU.
+ * That's why we have 'tablesPhysical' for this and tables just
+ * for index. 
+ * Problem: If we use 'tables' to put all necessary flags, we 
+ * can't find the 'page table' because of the flag. So:
+ * 'tables' DO NOT use any kind of flags.
+ * 'tablesPhysical' USES flags for the CPU.
+ */
 typedef struct page_directory{
         page_table_t * tables[1024];
         u32int tablesPhysical[1024];
+        u32int phy_addr;
 }page_directory_t;
 
 

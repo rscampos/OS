@@ -19,7 +19,9 @@ page_t * get_page(u32int address, int make, page_directory_t * page_dir){
         u32int index_page = address / 0x1000;
         page_table_t * temp_table;
         if(page_dir->tables[index_page/1024]){  /* check if there is the PT */
-                /* if there is the PT, the position for the page will be returned */
+                /* if there is the PT, the position for the page will be returned 
+		 * That's why we use 'tables' instead 'tablesPhysical', see: paging.h.
+		 */
         }else if(make){ /* create a new PT and assigned to the PD */
                 u32int temp;
                 page_table_t * temp_table;
@@ -27,13 +29,13 @@ page_t * get_page(u32int address, int make, page_directory_t * page_dir){
                 temp = kmalloc_a(sizeof(page_table_t),1);
                 //printf("PT#%d created at:0x%x\n",index_page/1024, temp);
                 if(paging_enable==1){ /* temp is a page - need to get the phy addr.*/
-                        temp_page = get_page(temp,PT_CREATE,kernel_directory);
+                        temp_page = get_page(temp,PT_CREATE, page_dir);
                         page_dir->tables[index_page/1024]               = (page_table_t*)temp;
-                        page_dir->tablesPhysical[index_page/1024]       = (page_table_t*)((temp_page->frame_address << 12) | 0x5);
+                        page_dir->tablesPhysical[index_page/1024]       = (page_table_t*)((temp_page->frame_address << 12) | 0x7);
 
                 }else{ /* temp is just a physical address*/
                         page_dir->tables[index_page/1024]               = (page_table_t*)temp;
-                        page_dir->tablesPhysical[index_page/1024]       = temp | 0x5;
+                        page_dir->tablesPhysical[index_page/1024]       = temp | 0x7;
                 }
                 memset(temp,0,sizeof(page_table_t)); /* this line is going to trigger the #PF */
         }else{
@@ -95,8 +97,12 @@ void enable_paging(){
 }
 
 void load_page_dir(page_directory_t *dir){
-
-        asm("movl %0, %%cr3;"::"r" (&dir->tablesPhysical));
+	if (paging_enable == 1)
+        	asm("movl %0, %%cr3;"::"r" (dir->phy_addr));
+	else{
+		asm("movl %0, %%cr3;"::"r" (&dir->tablesPhysical));
+		dir->phy_addr = &dir->tablesPhysical;
+	}
 
         enable_paging();
 }

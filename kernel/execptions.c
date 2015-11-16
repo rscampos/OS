@@ -187,8 +187,6 @@ void int80(registers_t regs){
         if(regs.eax == 4)
                 printf("Ring3:%s\n", regs.ecx);
 
-        asm("cli");
-        asm("hlt");
 }
 
 void init_exceptions(){
