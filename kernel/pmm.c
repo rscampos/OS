@@ -56,31 +56,8 @@ void pmm_memory_map(multiboot_info_t* bootinfo){
 
 }
 
-page_directory_t * clone_page_dir(page_directory_t *pd){
-	page_directory_t *new_pd;
-	page_directory_t *temp_pd;
-	page_t *page_temp;
-	u32int *temp;
-	int pde, pte;
-
-	printf("Cloning PD:0x%x\n", pd);	
-	new_pd = (page_directory_t*) kmalloc_a(sizeof(page_directory_t), 1);
-
-	/* get the frame addr. */
-	page_temp = get_page((u32int *)new_pd->tablesPhysical, 1, kernel_directory);
-
-	memcpy(new_pd, pd, sizeof(page_directory_t));
-
-	new_pd->phy_addr = page_temp->frame_address << 12;
-
-	return new_pd;
-};
-
 void pmm_init_page(){
         char * virt_addr = 0x0;
-        u32int address;
-        page_t * temp;
-	page_directory_t *kernel_directory2;
         
 	/* Alloc and clean memory for PD (Page Directory) */
         kernel_directory = (page_directory_t*) kmalloc_a(sizeof(page_directory_t), 1);
@@ -94,37 +71,6 @@ void pmm_init_page(){
 
         register_interrupt_handler(ISR14, &page_fault);
         load_page_dir(kernel_directory);
-
-        /* clone the PD */
-	kernel_directory2 = clone_page_dir(kernel_directory);	
-	printf("PD Cloned:0x%x\n", kernel_directory2);
-
-	/* fill kpd1 */
-        virt_addr = 0x0804A000;
-        temp = get_page(virt_addr, 1, kernel_directory);
-        pmm_alloc_frame(temp, PAGE_USER, PAGE_WRITE);
-        memset(virt_addr, 'B', 20);
-
-	/* fill kpd2 */	
-	load_page_dir(kernel_directory2);
-        virt_addr = 0x0804A000;
-	temp = get_page(virt_addr, 1, kernel_directory2);
-        pmm_alloc_frame(temp, PAGE_USER, PAGE_WRITE);
-        memset(virt_addr, 'A', 20);
-	
-	printf("PD2 0x%x:%s\n",virt_addr, virt_addr);
-
-	load_page_dir(kernel_directory);
-	printf("PD1 0x%x:%s\n",virt_addr, virt_addr);
-	
-	load_page_dir(kernel_directory2);
-	printf("PD2 0x%x:%s\n",virt_addr, virt_addr);
-
-	load_page_dir(kernel_directory);
-	printf("PD1 0x%x:%s\n",virt_addr, virt_addr);
-	
-	asm("cli");
-	asm("hlt");
 }
 
 void pmm_init_bitmap(){

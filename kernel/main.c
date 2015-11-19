@@ -30,30 +30,14 @@ int main()
                 memset(addr_k,0x41, size);
         }
         */
+	
+	/* Create all the process */
+	create_process("/PROGRAMS/FIRST");
+	create_process("/PROGRAMS/SECOND");
+	create_process("/PROGRAMS/THIRD");
 
-        //printf("addr:0x%x\n",addr_k);
-        //puts("done.\n");
-        //
-
-        pathname = "/PROGRAMS/RING3";
-//        printf("Reading %s\n",pathname);
-
-        node = open_vfs(pathname);
-        read_vfs(node, ptr, 512);
-        //write_vfs(node, ptr, 512);
-
-        /* Show the file content */
-        /*
-        printf("Content: ");
-        for(int i=0; i < node->size; i++)
-                printf("0x%x ",ptr[i]);
-        printf("\n");
-        */
-        memcpy(0x0804A000, ptr, node->size);
-        close_vfs(node);
-
-        /* call ring3 */
-        ring3_test();
+	/* Start exec all the created process */
+        exec_process();
 
         return 1;
 }

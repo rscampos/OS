@@ -24,12 +24,15 @@ int close_vfs(vfs_node_t *node){
                 return -1;
 }
 
-vfs_node_t * open_vfs(char *pathname){
+vfs_node_t * open_vfs(const char *path){
         vfs_node_t * temp;
         char *search=0;
-
+	char *pathname;
         temp = root_fs;
         int i,s_path;
+
+	pathname = kmalloc(strlen(path));
+	memcpy(pathname, path, strlen(path)+1);
         s_path = strlen(pathname) + 2;
 
         for(i=0;i<s_path;i++){

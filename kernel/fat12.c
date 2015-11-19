@@ -18,7 +18,7 @@ int read_fs_fat12(vfs_node_t *node, void *buffer, u32int size){
         content = (0x4200/0x200) + offset;
         source  = fat12 + content;
 
-        printf("Read callback called: %s 0x%x %d\n", node->filename, buffer, size);
+        //printf("Read callback called: %s 0x%x %d\n", node->filename, buffer, size);
         memcpy(buffer,source,size);
         return 0;
 }
@@ -29,7 +29,7 @@ int write_fs_fat12(vfs_node_t *node, void *buffer, u32int size){
 }
 
 int close_fs_fat12(vfs_node_t *node){
-        printf("Close callback called: %s\n", node->filename);
+        //printf("Close callback called: %s\n", node->filename);
         return 0;
 }
 

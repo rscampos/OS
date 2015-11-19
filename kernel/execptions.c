@@ -178,15 +178,16 @@ void machine_check(registers_t regs){
 
 
 void int80(registers_t regs){
-        printf("Syscall fired!\n");
-        printf("FUNC (EAX): 0x%x\n",regs.eax);
-        printf("(EBX): 0x%x\n",regs.ebx);
-        printf("(ECX): 0x%x\n",regs.ecx);
-        printf("(EDX): 0x%x\n",regs.edx);
+        printf(" Syscall fired!\n");
+	//printf("FUNC (EAX): 0x%x\n",regs.eax);
+        //printf("(EBX): 0x%x\n",regs.ebx);
+        //printf("(ECX): 0x%x\n",regs.ecx);
+        //printf("(EDX): 0x%x\n",regs.edx);
 
         if(regs.eax == 4)
-                printf("Ring3:%s\n", regs.ecx);
+                printf("Ring3: %s\n", regs.ecx);
 
+	exec_process();
 }
 
 void init_exceptions(){

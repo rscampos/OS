@@ -49,6 +49,9 @@ int setuphal(multiboot_info_t* bootinfo)
         /* Init fat12 */
         init_fat12();
 
+	/* Init all the process */
+	init_process();
+
         /* PCI Routines */
         //init_pci();
         return 1;

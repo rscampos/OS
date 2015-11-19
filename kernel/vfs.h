@@ -22,10 +22,10 @@ typedef struct vfs_node{
         struct vfs_node *subdir;
 }vfs_node_t;
 
-int read_vfs(vfs_node_t *node, void *buffer, u32int size);
-int write_vfs(vfs_node_t *node, const void *buffer, u32int size);
-int close_vfs(vfs_node_t *node);
-vfs_node_t * open_vfs(char *pathname);
+int read_vfs(vfs_node_t *, void *, u32int);
+int write_vfs(vfs_node_t *, const void *, u32int);
+int close_vfs(vfs_node_t *);
+vfs_node_t * open_vfs(const char *);
 
 #define VFS_DIRECTORY    0X10
 #define VFS_FILE         0X20
