@@ -14,6 +14,7 @@ Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
 - [ ] Filesystem (reservar um tempo para focar apenas no FS - ler Tanenbaum):
    - [x] Obtém próximo cluster. **Feito:** 05/08/15. Commit: [b45cae3a54b92f44fdc8227372a88fc8a5f3fc92]. 
    - [x] READ: lendo 512 bytes, o necessário para subir um programa para ser executado em ring3.
+   - [ ] open_vfs: URGENTE: precisa de fix. Criar arquivo 'PROG3' por exemplo no /.
    - [ ] READ: ler vários sectores ao mesmo tempo, quando passado >512 Bytes.
    - [ ] WRITE: Implementar.
    - [ ] OPEN/CLOSE - verificar o esquema utilizado para saber se o arquivo esta open/close, se foi modificado para ser salvo.
