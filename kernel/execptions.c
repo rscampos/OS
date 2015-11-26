@@ -1,4 +1,3 @@
-
 #include "common.h"
 #include "isr.h"
 
@@ -178,16 +177,21 @@ void machine_check(registers_t regs){
 
 
 void int80(registers_t regs){
-        printf(" Syscall fired!\n");
+        //printf(" Syscall fired!\n");
 	//printf("FUNC (EAX): 0x%x\n",regs.eax);
         //printf("(EBX): 0x%x\n",regs.ebx);
         //printf("(ECX): 0x%x\n",regs.ecx);
         //printf("(EDX): 0x%x\n",regs.edx);
 
-        if(regs.eax == 4)
-                printf("Ring3: %s\n", regs.ecx);
+        if(regs.eax == 0){
+		printf("[exit()]");
+		//process_finish();
+	}
 
-	exec_process();
+        if(regs.eax == 4)
+		printf("[write(%s)]", regs.ecx);
+
+	return;
 }
 
 void init_exceptions(){

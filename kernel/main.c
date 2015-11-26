@@ -8,9 +8,8 @@
 int main()
 {
         int sum, mul, num1, num2,size;
-        num1=-100;
-        num2=60;
-        char interger[11];
+        int pid;
+	char interger[11];
         char buffer[50];
         u8int *ptr;
         u32int *do_page_fault;
@@ -32,12 +31,19 @@ int main()
         */
 	
 	/* Create all the process */
-	create_process("/PROGRAMS/FIRST");
-	create_process("/PROGRAMS/SECOND");
-	create_process("/PROGRAMS/THIRD");
-
+	
+	pid = create_process("/PROGRAMS/FIRST");
+	printf("Process:%d created!\n", pid);
+	
+	pid = create_process("/PROGRAMS/SECOND");
+	printf("Process:%d created!\n", pid);
+	
+	pid = create_process("/PROGRAMS/THIRD");
+	printf("Process:%d created!\n", pid);
+	
 	/* Start exec all the created process */
         exec_process();
+	printf("Testando!!!\n");
 
         return 1;
 }

@@ -1,18 +1,19 @@
-
 #include "common.h"
 #include "isr.h"
+//#include "process.h"
 
-u32int tick=0;
+u32int tick;
 
 static void timer_callback(registers_t regs){
         tick++;
-        printf("Tick: %d\n", tick);
+	switch_task(regs);
+	return;
 }
 
 void init_timer(int frequency){
         int divisor;
         u8int l, h;
-        
+	tick = 0;
         register_interrupt_handler(IRQ0,&timer_callback);
         
         divisor = 1193180 / frequency;

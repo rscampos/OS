@@ -33,7 +33,7 @@ void gdt_set_gate(int num, u32int base, u8int access, u32int limit, u8int granul
         gdt_table[num].access        = access;
 }
 void init_gates(){
-
+	/* ISR's */
         idt_set_gate(0,(u32int)isr0,0x8,0x8E);
         idt_set_gate(1,(u32int)isr1,0x8,0x8E);
         idt_set_gate(3,(u32int)isr3,0x8,0x8E);
@@ -41,6 +41,8 @@ void init_gates(){
 	idt_set_gate(10,(u32int)isr10,0x8,0x8E);
 	idt_set_gate(13,(u32int)isr13,0x8,0x8E);
         idt_set_gate(14,(u32int)isr14,0x8,0x8E);
+	
+	/* IRQ's */
 	idt_set_gate(32,(u32int)irq0,0x8,0x8E);
         idt_set_gate(33,(u32int)irq1,0x8,0x8E);
         idt_set_gate(38,(u32int)irq6,0x8,0x8E);

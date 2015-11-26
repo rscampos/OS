@@ -51,7 +51,7 @@ tss_install:
     jmp isr_common_stub
 %endmacro
 
-%macro IRQ 2  ; define a macro, taking one parameter
+%macro IRQ 2		; define a macro, taking one parameter
   [GLOBAL irq%1]        ; %1 accesses the first parameter.
   irq%1:
     cli
