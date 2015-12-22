@@ -175,21 +175,25 @@ void machine_check(registers_t regs){
 }
 */
 
-
 void int80(registers_t regs){
         //printf(" Syscall fired!\n");
 	//printf("FUNC (EAX): 0x%x\n",regs.eax);
         //printf("(EBX): 0x%x\n",regs.ebx);
         //printf("(ECX): 0x%x\n",regs.ecx);
         //printf("(EDX): 0x%x\n",regs.edx);
+        //printf("regs - &0x%x[0x%x]\n", &regs, regs);
 
-        if(regs.eax == 0){
-		printf("[exit()]");
-		//process_finish();
-	}
+	/* swtich sync */
+	if(regs.eax == 0)
+		do_switch(regs);
 
-        if(regs.eax == 4)
-		printf("[write(%s)]", regs.ecx);
+	/* exit */
+	if(regs.eax == 1)
+		do_exit(regs);
+	
+	/* write */
+	if(regs.eax == 4)
+		do_write(regs);
 
 	return;
 }

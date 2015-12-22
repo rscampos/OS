@@ -6,7 +6,7 @@ u32int tick;
 
 static void timer_callback(registers_t regs){
         tick++;
-	switch_task(regs);
+	//switch_task(regs);
 	return;
 }
 
