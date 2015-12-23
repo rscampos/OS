@@ -31,7 +31,7 @@ Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
    - [x] 7) Arrumar o scheduler (salvar registers).
    - [ ] 8) Fazer interface correta de syscall (usando syscall table).
             - Criar outras syscall.
-   - [ ] 9) Arrumar o PIT e fazer o escalonador correto.
+   - [ ] 9) Arrumar o PIT e fazer 'preemptive scheduling'.
 - [ ] Arrumar o problema com o bochs - problema com IMG do kernel.
 - [ ] Getting forward:
    - [ ] Comunicação com periféricos - Mundo PCI.
