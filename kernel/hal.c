@@ -58,8 +58,11 @@ int setuphal(multiboot_info_t* bootinfo)
 	/* Init all the process */
 	init_process();
 
-        init_timer(22123);
+        //init_timer(22123);
 	/* PCI Routines */
         //init_pci();
-        return 1;
+
+	init_syscall();
+        
+	return 1;
 }
