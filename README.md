@@ -27,7 +27,13 @@ Commit: [397bd43de8a92ec94803fcc2d181192660184b81].
    - [x] 3) Obter os bytes de um executável e jogá-lo na memória. **Feito**: 12/11/15.
    - [x] 4) Tentar clonar a PD (para que o kernel sempre fique no mesmo lugar). **Feito**:17/11/15. Commit: [45f3c209dfeb8d844bcd299cc75613c90f5cb4ef].
    - [x] 5) Criar uma BCP com PD e fazer escalonamento a cada int 0x80. **Feito**: 19/11/15. Commit: [0377a407ea773143ff3eed07007ba1c9307ab59c]. 
-   - [x] 6) Fazer task switch via int 0x80 (temporário).
+   - [x] 6) Fazer task switch via int 0x80 (chamado 'cooperative scheduling').
    - [x] 7) Arrumar o scheduler (salvar registers).
    - [ ] 8) Fazer interface correta de syscall (usando syscall table).
+            - Criar outras syscall.
    - [ ] 9) Arrumar o PIT e fazer o escalonador correto.
+- [ ] Arrumar o problema com o bochs - problema com IMG do kernel.
+- [ ] Getting forward:
+   - [ ] Comunicação com periféricos - Mundo PCI.
+   - [ ] Conhecer outras estruturas (LDT) e registradores (MSR).
+
