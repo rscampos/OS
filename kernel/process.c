@@ -140,8 +140,8 @@ void switch_regs(registers_t *current, registers_t *next){
 	next->esi = head->regs.esi;
 	next->ebp = head->regs.ebp;
 	next->useresp = head->regs.esp;
-	next->eflags = head->regs.eflags;
-	next->eip = head->regs.eip;
+	next->eflags  = head->regs.eflags;
+	next->eip     = head->regs.eip;
 }
 
 void switch_task(registers_t regs){
@@ -163,7 +163,7 @@ void switch_task(registers_t regs){
 
 void exec_process(){
 
-	printf("Executing...:(start pid:%d)\n",head->pid);
+	printf("Executing...:(start pid:%d)\n", head->pid);
 	
 	// Start executing the first process...
 	asm("cli");
