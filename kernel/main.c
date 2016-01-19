@@ -11,16 +11,20 @@ int main()
 	/* Create all the process */
 		
 	pid = create_process("/PROGRAMS/FIRST");
-	printf("Process:%d created!\n", pid);
+	if(pid != -1)
+		printf("Process:%d created!\n", pid);
 	
 	pid = create_process("/PROGRAMS/SECOND");
-	printf("Process:%d created!\n", pid);
+	if(pid != -1)
+		printf("Process:%d created!\n", pid);
 	
 	pid = create_process("/PROGRAMS/THIRD");
-	printf("Process:%d created!\n", pid);
+	if(pid != -1)
+		printf("Process:%d created!\n", pid);
 
 	pid = create_process("/PROGRAMS/FOURTH");
-	printf("Process:%d created!\n", pid);
+	if(pid != -1)
+		printf("Process:%d created!\n", pid);
 
 	/* Start exec all the created process */
         exec_process();

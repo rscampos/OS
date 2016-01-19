@@ -64,21 +64,20 @@ int create_process(const char *pathname){
 	task_struct_t * process;
 	page_t * temp;
 	u32int virt_addr, esp_addr;
-
-	/* Putting the process in the linked list */
-	process = make_process();
-	process->pid = ++pid;
-	//process->finished = 0;
-
-	/* Creating a PD for the new process */
-	process->pd = clone_page_dir(kernel_directory);
 	
-	/* Copying the program imagem from disk to memory */
+	/* Try to open the file first. File exist ?, then copy to memory */
 	node = open_vfs(pathname);
 	
 	if(node == -1)
 		return -1;
 
+	/* Putting the process in the linked list */
+	process = make_process();
+	process->pid = ++pid;
+
+	/* Creating a PD for the new process */
+	process->pd = clone_page_dir(kernel_directory);
+	
         read_vfs(node, ptr, 512);
 	load_page_dir(process->pd);
 	virt_addr = 0x0804A000;
