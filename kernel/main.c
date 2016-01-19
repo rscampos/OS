@@ -9,10 +9,10 @@ int main()
 {
         int pid;
 	/* Create all the process */
-	/*	
+		
 	pid = create_process("/PROGRAMS/FIRST");
 	printf("Process:%d created!\n", pid);
-	*/
+	
 	pid = create_process("/PROGRAMS/SECOND");
 	printf("Process:%d created!\n", pid);
 	

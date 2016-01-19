@@ -38,7 +38,7 @@ void strcat(char * dest, char * src);
 /* Counts how many bytes there is in the 
  * buffer.
  */
-int strlen(char * buf);
+int strlen(const char * buf);
 
 /* Chage the colors of background and foreground */
 void vga_change_colors(u8int color);

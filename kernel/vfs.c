@@ -29,23 +29,29 @@ vfs_node_t * open_vfs(const char *path){
         char *search=0;
 	char *pathname;
         temp = root_fs;
-        int i,s_path;
+        int i,size_path;
+	
+	size_path = strlen(path);
+	pathname  = kmalloc(size_path + 1); /* +1 for NULL terminator */
+	memcpy(pathname, path, size_path + 1);
 
-	pathname = kmalloc(strlen(path));
-	memcpy(pathname, path, strlen(path)+1);
-        s_path = strlen(pathname) + 2;
-
-        for(i=0;i<s_path;i++){
+	/* Iteration over the string (path) */
+        for(i=0; i <= size_path; i++){
                 if(pathname[i]=='/' || pathname[i]=='\0'){
-                        pathname[i]=0x00;
-                        if(search){
+                        
+			pathname[i]=0x00;
+			
+			/* search points to word (directory or file) */
+                        if(search){ 
                                 while(temp){
-                                        //printf("Search:%s filename:%s\n",search, temp->filename); /* TODO */
                                         if(strcmp(search,temp->filename) == 0){
-                                                //printf("Found:%s (i:%d s_path:%d)\n",temp->filename,i,s_path);
-                                                if(i+1 == s_path)
+
+						/* file found */
+                                                if(i == size_path)
                                                         return temp;
-                                                temp = temp->subdir; /* enter subdir */
+						
+						/* subdir found */
+                                                temp = temp->subdir;
                                                 break;
                                         }
                                         temp = temp->next;
@@ -55,7 +61,6 @@ vfs_node_t * open_vfs(const char *path){
                         search = &pathname[i+1];
                 }
         }
-        //printf("File:%s, %s\n",search,temp->filename);
-
-        return -1;
+        
+	return -1;
 }

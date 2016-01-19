@@ -209,11 +209,14 @@ void strcat(char * dest, char * src){
         dest[cdest] = '\0';
 }
 
-int strlen(char * buf){
-        int i=0;
-        while(buf[i]!='\0')
-                i++;
-        return i-1;
+/* modifications from freebsd */
+int strlen(const char * buf){
+        int len = 0;
+        
+	while(*buf++ != '\0')
+                len++;
+
+        return len;
 }
 
 void itoa(int num, char * buf, int base){
