@@ -42,14 +42,13 @@ char * pmm_type(u32int mmtype){
  */
 void pmm_memory_map(multiboot_info_t* bootinfo){
         int region;
-
         u32int available_memory=0, used_memory=0;
-        //memory_len = bootinfo->m_memoryLo + 1;
+
+	/* Get the memory size in KB */
 	memory_len = 1024 + bootinfo->m_memoryLo + (bootinfo->m_memoryHi * 64);
-        /* Pointer to the memory map */
+        
+	/* Pointer to the memory map */
         memory_map_t * p_memory_map = bootinfo->m_mmap_addr;
-        //memory_len = ((memory_len*64)/1024)+16;
-        //memory_len = ((memory_len*64))+16;
 
         /* Inicalize the bitmap for the physical memory */
         pmm_init_bitmap();
