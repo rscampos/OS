@@ -64,8 +64,8 @@ Stage2:
         ;-------------------------------;
         
         call    BiosGetMemorySize64MB
-        mov     word [memoryLo], bx
-        mov     word [memoryHi], ax
+        mov     word [memoryLo], ax
+        mov     word [memoryHi], bx
  
         ;-------------------------------;
         ;   Get memory map	        ;

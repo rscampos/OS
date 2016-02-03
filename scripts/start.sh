@@ -4,7 +4,7 @@ DEVICE="/dev/loop0"
 #DEVICE="/tmp/floppy.img"
 SO_PATH=`pwd`/../
 KERNEL="$SO_PATH/kernel"
-MEM=512
+MEM=128
 #LOGS="-d cpu_reset -D ./qemu.log"
 LOGS="-d pcall -D /tmp/qemu.log"
 

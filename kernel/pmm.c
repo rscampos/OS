@@ -4,7 +4,7 @@
 #include "isr.h"
 
 #define PMM_BITMAP_SCHUNCK      8               /* Size of the chunck (in bits) */
-#define PMM_MEM_TO_M_B(x)       (x*1024*1024)
+#define PMM_MEM_K_TO_B(x)       (x*1024)
 #define PMM_MEM_TO_B_M(x)       (x/(1024*1024))
 #define PMM_MEM_TO_B_K(x)       (x/(1024))
 
@@ -44,11 +44,12 @@ void pmm_memory_map(multiboot_info_t* bootinfo){
         int region;
 
         u32int available_memory=0, used_memory=0;
-        memory_len = bootinfo->m_memoryLo + 1;
-
+        //memory_len = bootinfo->m_memoryLo + 1;
+	memory_len = 1024 + bootinfo->m_memoryLo + (bootinfo->m_memoryHi * 64);
         /* Pointer to the memory map */
         memory_map_t * p_memory_map = bootinfo->m_mmap_addr;
-        memory_len = ((memory_len*64)/1024)+16;
+        //memory_len = ((memory_len*64)/1024)+16;
+        //memory_len = ((memory_len*64))+16;
 
         /* Inicalize the bitmap for the physical memory */
         pmm_init_bitmap();
@@ -62,7 +63,7 @@ void pmm_init_page(){
 	/* Alloc and clean memory for PD (Page Directory) */
         kernel_directory = (page_directory_t*) kmalloc_a(sizeof(page_directory_t), 1);
 	memset(kernel_directory, 0, sizeof(page_directory_t));
-
+	
         /* All the PTs are reserved after the PD */
         while(virt_addr < phy_addr){
                 pmm_alloc_frame(get_page(virt_addr, 1, kernel_directory), PAGE_USER, PAGE_WRITE);
@@ -78,7 +79,7 @@ void pmm_init_bitmap(){
         int i;
 
         /* Alloc memory for bitmap */
-        number_frames = PMM_MEM_TO_M_B(memory_len)/PMM_FRAME_SIZE;
+        number_frames = PMM_MEM_K_TO_B(memory_len)/PMM_FRAME_SIZE;
         bitmap = kmalloc(number_frames/PMM_BITMAP_SCHUNCK);
         memset(bitmap,0,number_frames/PMM_BITMAP_SCHUNCK);
 
