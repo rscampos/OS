@@ -24,7 +24,7 @@ void init_timer(int frequency){
          */
         outb(0x43, 0x36);
 
-        l = (u8int) (divisor & 0xFF);
+       	l = (u8int) (divisor & 0xFF);
         h = (u8int) ((divisor >> 8) & 0xFF);
 
         outb(0x40,l);

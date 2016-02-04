@@ -58,14 +58,16 @@ void pmm_memory_map(multiboot_info_t* bootinfo){
 
 void pmm_init_page(){
         char * virt_addr = 0x0;
-        
+	page_t * page;
+
 	/* Alloc and clean memory for PD (Page Directory) */
         kernel_directory = (page_directory_t*) kmalloc_a(sizeof(page_directory_t), 1);
 	memset(kernel_directory, 0, sizeof(page_directory_t));
 	
         /* All the PTs are reserved after the PD */
         while(virt_addr < phy_addr){
-                pmm_alloc_frame(get_page(virt_addr, 1, kernel_directory), PAGE_USER, PAGE_WRITE);
+                page = get_page(virt_addr, 1, kernel_directory);
+                pmm_alloc_frame(page, PAGE_USER, PAGE_WRITE);
                 virt_addr += PAGE_SIZE;
         }
 

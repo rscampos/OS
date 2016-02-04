@@ -18,17 +18,20 @@ int setuphal(multiboot_info_t* bootinfo)
 
         /* GDT e IDT inicialization */
         //puts("[HAL] Set up GDT, IDT and PIC remmap...");
-        init_descriptor_tables();
+	init_descriptor_tables();
         //puts("done.\n");
-        asm volatile("sti");
+
 
         /* IRQs inicialization */
-        //puts("[HAL] Installing IRQs...\n");
-        //init_timer(20000000);
+        puts("[HAL] Installing IRQs...\n");
 
 
 
-        //init_keyboard();
+
+        init_keyboard();
+	//asm volatile("sti");
+        //asm volatile("jmp .");
+
 
 
 
@@ -45,14 +48,19 @@ int setuphal(multiboot_info_t* bootinfo)
 
         pmm_memory_map(bootinfo);
 
+        //asm volatile("sti");
         puts("[HAL] memory map done\n");
 
         /* Setup the floppy driver */
 
+        asm volatile("sti");
+        init_timer(20000000);
+        //asm volatile("jmp .");
         init_fdctrl();
 
         /* Init fat12 */
         init_fat12();
+	
 
         puts("[HAL] Init process\n");
 	/* Init all the process */
@@ -63,6 +71,6 @@ int setuphal(multiboot_info_t* bootinfo)
         //init_pci();
 
 	init_syscall();
-        
+
 	return 1;
 }
