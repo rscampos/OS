@@ -11,66 +11,56 @@ int setuphal(multiboot_info_t* bootinfo)
         clear_screen();
 
         /* Create the borders*/
-        vga_banner_top("                   --==[ Physical Memory Manager (PMM) ]==--                    ");
-        vga_banner_bottom("                     --==[ Build the paging schema... ]==--                     ");
-
-        //puts("[HAL] Set up screen...done\n");
+        vga_banner_top("                           --==[ Operation System ]==--                          ");
+        vga_banner_bottom("                       --==[ Executing all process... ]==--                      ");
 
         /* GDT e IDT inicialization */
-        //puts("[HAL] Set up GDT, IDT and PIC remmap...");
+        puts("[HAL] Set up GDT, IDT and PIC remmap...");
 	init_descriptor_tables();
-        //puts("done.\n");
-
+        puts("done.\n");
 
         /* IRQs inicialization */
-        puts("[HAL] Installing IRQs...\n");
-
-
-
-
+        puts("[HAL] Installing IRQs...");
         init_keyboard();
-	//asm volatile("sti");
-        //asm volatile("jmp .");
-
-
-
-
-        /* Execptions inicialization */
-        //puts("[HAL] Installing Execptions...");
+        init_timer(20000000);
+        puts("done.\n");
+        
+	/* Execptions inicialization */
+        puts("[HAL] Installing Execptions...");
         init_exceptions();
-        //asm volatile("int3");
-        //puts("done.\n");
+        puts("done.\n");
 
         /* Turn on the interrupts - Let's start the kernel */
-        //puts("[HAL] Enabling interrupt...");
+        puts("[HAL] Enabling interrupt...");
+        asm volatile("sti");
+        puts("done.\n");
 
-        ///puts("done.\n");
-
+        /* Mapping virtual address to frames */
+        puts("[HAL] Mapping the memory...");
         pmm_memory_map(bootinfo);
+        puts("done.\n");
 
-        //asm volatile("sti");
-        puts("[HAL] memory map done\n");
 
         /* Setup the floppy driver */
-
-        asm volatile("sti");
-        init_timer(20000000);
-        //asm volatile("jmp .");
+        puts("[HAL] Floppy controller initialization...");
         init_fdctrl();
+        puts("done.\n");
 
         /* Init fat12 */
+        puts("[HAL] Loading file system (FAT12)...");
         init_fat12();
+        puts("done.\n");
 	
 
-        puts("[HAL] Init process\n");
 	/* Init all the process */
+        puts("[HAL] Init process\n");
 	init_process();
 
-        //init_timer(22123);
+	/* Syscall init */
+	init_syscall();
+	
 	/* PCI Routines */
         //init_pci();
-
-	init_syscall();
 
 	return 1;
 }
