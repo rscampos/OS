@@ -200,9 +200,9 @@ void init_fat12(){
         subdir_temp     = 0;
         root_fs_lock    = 0;
         index_inode     = 0;
-
-        floppy_fat12 = kmalloc(sectors * 512);
-        memset(floppy_fat12, 0x00, sectors * 512);
+	
+	floppy_fat12 = kmalloc(sectors * 512);
+	memset(floppy_fat12, 0x00, sectors * 512);
 
         /* Alloc space for all floppy */
         for(i=0;i<sectors;i++){
